@@ -16,6 +16,7 @@ public class Librarian {
 	private Connection con;
 	
 	private final int NUM_CHECKED_OUT_REPORT_COL = 5;
+	private final int NUM_POPURLAR_REPROT_COL = 7;
 	
 	public Librarian(Connection con) {
 		this.con = con;
@@ -81,14 +82,14 @@ public class Librarian {
 		
 		try {
 			if(subject.compareTo("") == 0)
-				ps = con.prepareStatement(	"SELECT Borrowing.callNumber, Borrowing.copyNo, Borrowing.outDate, Borrowing.inDate" +
-											"FROM Borrowing" +
+				ps = con.prepareStatement(	"SELECT Borrowing.callNumber, Borrowing.copyNo, Borrowing.outDate, Borrowing.inDate " +
+											"FROM Borrowing " +
 											"ORDER BY Borrowing.callNumber");
 			else
 			{
-				ps = con.prepareStatement(	"SELECT Borrowing.callNumber, Borrowing.copyNo, Borrowing.outDate, Borrowing.inDate" +
-											"FROM Borrowing, HasSubject" +
-											"WHERE Borrowing.callNumber = HasSubject.callNumber AND HasSubject.subject = ?" +
+				ps = con.prepareStatement(	"SELECT Borrowing.callNumber, Borrowing.copyNo, Borrowing.outDate, Borrowing.inDate " +
+											"FROM Borrowing, HasSubject " +
+											"WHERE Borrowing.callNumber = HasSubject.callNumber AND HasSubject.subject = ? " +
 											"ORDER BY Borrowing.callNumber");
 				ps.setString(1, subject);
 			}
@@ -122,11 +123,76 @@ public class Librarian {
 				con.rollback();	
 			}
 			catch (SQLException ex2) {
-				System.out.println("Message: " + ex2.getMessage());
+				JOptionPane.showMessageDialog(null,
+						"Message: " + ex2.getMessage(),
+						"Error",
+						JOptionPane.ERROR_MESSAGE);	
 				System.exit(-1);
 			}
 		}
-		
+		return report;
+	}
+	
+	/**
+	 * Lists out the top n books that where borrowed the most times during that year.
+	 * The books are ordered by the number of times they were borrowed.
+	 * The report contains the books' callNumber, isbn, title, main author, 
+	 * publisher, year and the number of times the books were borrowed
+	 * @param year
+	 * @param n	number of books to be shown on the report, must > 0
+	 * @return	a report with the most popular n items in a given year
+	 */
+	public ArrayList<String[]> getPopularReport(int year, int n)
+	{
+		ArrayList<String[]> report = new ArrayList<String[]>();
+		PreparedStatement ps;
+		ResultSet rs;
+		try {
+			ps = con.prepareStatement("select * from ( " +
+					"select * from book natural join ( " +
+					"select callNumber, count(*) as scount " +
+					"from borrowing " +
+					"group by callnumber " +
+					"order by scount desc) " +
+					"where ROWNUM < ?) " +
+					"where year = ? ");
+			ps.setString(2, Integer.toString(n + 1));
+			ps.setString(2, Integer.toString(year));
+			
+			rs = ps.executeQuery();
+			while(rs.next())
+			{
+				String[] row = new String[NUM_POPURLAR_REPROT_COL];
+				
+				row[0] = rs.getString("callNumber");
+				row[1] = Integer.toString(rs.getInt("isbn"));
+				row[2] = rs.getString("title");
+				row[3] = rs.getString("mainAuthor");
+				row[4] = rs.getString("publisher");
+				row[5] = Integer.toString(rs.getInt("year"));
+				row[6] = Integer.toString(rs.getInt("scount"));
+				
+				report.add(row);
+			}
+			rs.close();
+			ps.close();	
+		}
+		catch (SQLException ex) {	
+			JOptionPane.showMessageDialog(null,
+				"Message: " + ex.getMessage(),
+				"Error",
+				JOptionPane.ERROR_MESSAGE);	
+			try {
+				con.rollback();	
+			}
+			catch (SQLException ex2) {
+				JOptionPane.showMessageDialog(null,
+						"Message: " + ex2.getMessage(),
+						"Error",
+						JOptionPane.ERROR_MESSAGE);	
+				System.exit(-1);
+			}
+		}
 		return report;
 	}
 	
@@ -155,21 +221,22 @@ public class Librarian {
 	 * add one book copy of a book with the given callNumber
 	 */
 	private void addOneBookCopy(String callNumber) throws SQLException {
-		String copyNumber;
+		int copyNumber;
 		PreparedStatement ps = con.prepareStatement("SELECT MAX(copyNo) as copyNumber FROM BookCopy WHERE BookCopy.callNumber = ?");
 		ps.setString(1, callNumber);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) 
-			copyNumber = rs.getString("copyNumber");
+			copyNumber = rs.getInt("copyNumber");
 		else
 			throw new SQLException("No copyNo is returned");
 		rs.close();
 		
-		int copyNum = Integer.parseInt(copyNumber);
-		copyNum++;
+//		int copyNum = Integer.parseInt(copyNumber);
+//		copyNum++;
+		copyNumber++;
 		ps = con.prepareStatement("INSERT INTO BookCopy VALUES (?,?,?)");
 		ps.setString(1, callNumber);
-		ps.setString(2, Integer.toString(copyNum));
+		ps.setInt(2, copyNumber);
 		ps.setString(3, "in");
 		
 		ps.executeUpdate();
