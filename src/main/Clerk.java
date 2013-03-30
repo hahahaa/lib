@@ -1,5 +1,6 @@
 package main;
 
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -14,7 +15,7 @@ import javax.swing.JOptionPane;
 
 public class Clerk {
 
-	private Connection con;
+	private static Connection con;
 
 	public Clerk(Connection con) {
 		this.con = con;
@@ -33,7 +34,7 @@ public class Clerk {
 	 * @param type
 	 */
 
-	public void addBorrower(String password, String name, String address, int phone, 
+	public static void addBorrower(String password, String name, String address, int phone, 
 			String emailAddress, int sinOrStNo, Date expiryDate, String type){
 		PreparedStatement prepStatement;
 		try{
@@ -94,7 +95,7 @@ public class Clerk {
 	 * @param callNumber
 	 * @param copyNo
 	 */
-	public void processReturn(String callNumber, int copyNo){
+	public void processReturn(String callNumber, String copyNo){
 		PreparedStatement prepStatement;
 		ResultSet result;
 		String sqlQuery;
@@ -116,7 +117,7 @@ public class Clerk {
 					   "ORDER BY outDate DESC";
 			prepStatement = con.prepareStatement(sqlQuery);
 			prepStatement.setString(1, callNumber);
-			prepStatement.setInt(2, copyNo);
+			prepStatement.setString(2, copyNo);
 			result = prepStatement.executeQuery();
 			
 			if (result.next()){ 
@@ -161,7 +162,7 @@ public class Clerk {
 				sqlQuery = "UPDATE BookCopy SET status='on hold' WHERE BookCopy.callNumber = ? AND BookCopy.copyNo = ?";
 				prepStatement = con.prepareStatement(sqlQuery);
 				prepStatement.setString(1, callNumber);
-				prepStatement.setInt(2, copyNo);
+				prepStatement.setString(2, copyNo);
 				prepStatement.executeUpdate();
 				con.commit();
 				prepStatement.close();
@@ -196,39 +197,61 @@ public class Clerk {
 	}
 
 	public ArrayList<String> checkOverDueItems(){
-		Statement prepStatement;
+		Statement statement;
 		ResultSet result;
-
-		int bid;
-		String callNumber;
-		String copyNo;
-		String name;
-		String email;
-		int numOverDueItems = 0;
+		String sqlQuery;
+		
+		int index = 0;
+		
+		ArrayList<Integer> bids = new ArrayList<Integer>();
+		ArrayList<String> names = new ArrayList<String>();
+		ArrayList<String> titles = new ArrayList<String>();
 		ArrayList<String> callNumbers = new ArrayList<String>();
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> copyNos = new ArrayList<String>();
+		ArrayList<Date> inDates = new ArrayList<Date>();
 		ArrayList<String> emails = new ArrayList<String>();
+		
+		ArrayList<String> list = new ArrayList<String>();
 		try
 		{
-			prepStatement = con.createStatement();
-
-			result = prepStatement.executeQuery( "SELECT callNumber, copyNo, bid, name, emailAddress, inDate " +
-					                             "FROM Borrowing, Borrower " +
-					                             "WHERE inDate < SYSDATE and status = 'out'" );
-
+			statement = con.createStatement();
+			// find bid, name , title, call number, copy no., indate, email 
+			sqlQuery = "SELECT bid, name, title, callNumber, copyNo, inDate, emailAddress" +
+                    	"FROM Borrowing, Borrower, Book" +
+                    	"WHERE Borrowing.bid = Borrower.bid " +
+                    	"and Borrowing.callNumber = Book.callNumber" +
+                    	"and inDate < SYSDATE and status = 'out'";
+			result = statement.executeQuery(sqlQuery);
 			while (result.next()){
-				
+				// store values
+				bids.set(index, result.getInt("bid"));
+				names.set(index, result.getString("name"));
+				titles.set(index, result.getString("title"));
+				callNumbers.set(index, result.getString("callNumber"));
+				copyNos.set(index, result.getString("copyNo"));
+				inDates.set(index, result.getDate("inDate"));
+				emails.set(index, result.getString("emailAddress"));
+				index++;
 			}
+			statement.close();
+			result.close();
+			for (int i = 0; i < index; i++) {
+				list.set(i,"Bid: " + bids.get(i) + "Name: " + names.get(i) + "\n" + "Book Title: " + titles.get(i) +
+						"Call Number: " + callNumbers.get(i) + "Copy Number: " + copyNos.get(i) +
+						"\n" + "Due Date: " + inDates.get(i) + "Email Address: " + emails.get(i));
+			}
+						
 		} catch ( SQLException e ){
 			displayExceptionError(e);
 		}
+		//return list;
 		return list;
 	}
 	/**
-	 * Checks if borrower with bid has anything expired
+	 * Checks if borrower with corresponding bid has expired
 	 * 
 	 * @param bid
-	 * @return true if borrower has overdue books, false otherwise
+	 * @return true if borrower is expired, false otherwise
 	 */
 	private boolean hasExpired(int bid){
 		PreparedStatement prepStatement;
