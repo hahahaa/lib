@@ -22,14 +22,18 @@ public class Menu extends JPanel {
 
 		JTabbedPane tabbedPane = new JTabbedPane();
 		
-		BorrowerPanel borrower = new BorrowerPanel(con);
-		tabbedPane.addTab("Borrower", borrower.getPanel());
+		Font bItalic = new Font("Arial", Font.ITALIC, 15);
+		
+		tabbedPane.setFont(bItalic);
+		
+		BorrowerPanel borrower = new BorrowerPanel();
+		tabbedPane.addTab("1. Borrower", borrower.getBorrowerPanel());
 
-//		ClerkPanel clerk = new ClerkPanel();
-//		tabbedPane.addTab("Clerk", clerk.getClerkPanel());
-//
-//		LibrarianPanel librarian = new LibrarianPanel();
-//		tabbedPane.addTab("Librarian", librarian.getLibrarianPanel());
+		ClerkPanel clerk = new ClerkPanel();
+		tabbedPane.addTab("2. Clerk", clerk.getClerkPanel());
+
+		LibrarianPanel librarian = new LibrarianPanel();
+		tabbedPane.addTab("3. Librarian", librarian.getLibrarianPanel());
 
 		//Add the tabbed pane to this panel.
 		add(tabbedPane);
