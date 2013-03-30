@@ -1,4 +1,0 @@
-librarydb
-=========
-
-Library Database
