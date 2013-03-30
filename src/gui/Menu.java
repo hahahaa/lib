@@ -3,13 +3,11 @@ package gui;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-
 import java.sql.Connection;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 
@@ -26,13 +24,13 @@ public class Menu extends JPanel {
 		
 		tabbedPane.setFont(bItalic);
 		
-		BorrowerPanel borrower = new BorrowerPanel();
+		BorrowerPanel borrower = new BorrowerPanel(con);
 		tabbedPane.addTab("1. Borrower", borrower.getBorrowerPanel());
 
-		ClerkPanel clerk = new ClerkPanel();
+		ClerkPanel clerk = new ClerkPanel(con);
 		tabbedPane.addTab("2. Clerk", clerk.getClerkPanel());
 
-		LibrarianPanel librarian = new LibrarianPanel();
+		LibrarianPanel librarian = new LibrarianPanel(con);
 		tabbedPane.addTab("3. Librarian", librarian.getLibrarianPanel());
 
 		//Add the tabbed pane to this panel.

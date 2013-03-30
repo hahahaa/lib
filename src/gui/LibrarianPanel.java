@@ -21,6 +21,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
+import java.sql.Connection;
+
 import main.Librarian;
 
 public class LibrarianPanel {
@@ -38,7 +40,12 @@ public class LibrarianPanel {
 	
 	public static JTable viewOutTable;
 	public static DefaultTableModel outModel;
+	
+	private Connection con;
 
+	public LibrarianPanel(Connection con) {
+		this.con = con;
+	}
 	private void openAddBookForm(){
 		// Add Book Form
 		JPanel addBookForm = new JPanel();

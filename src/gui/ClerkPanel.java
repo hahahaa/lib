@@ -30,6 +30,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
+import java.sql.Connection;
+
 import main.Clerk;
 
 public class ClerkPanel {
@@ -53,7 +55,10 @@ public class ClerkPanel {
 	
 	private JPanel mainPanel;
 
-	public ClerkPanel(){
+	private Connection con;
+	
+	public ClerkPanel(Connection con) {
+		this.con = con;
 	}
 
 	private void openAddBorrowerForm(){

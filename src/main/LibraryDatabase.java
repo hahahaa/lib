@@ -4,10 +4,8 @@ import gui.Menu;
 
 import java.sql.*;
 
-//for reading from the command line
 import java.io.*;
 
-//for the login window
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;

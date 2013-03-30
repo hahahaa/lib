@@ -22,6 +22,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
+import java.sql.Connection;
+
 import main.Borrower;
 import main.Clerk;
 import main.Librarian;
@@ -31,8 +33,10 @@ public class BorrowerPanel {
 	
 	private JTextField searchField;
 	private JPanel mainPanel;
+	private Connection con;
 	
-	public BorrowerPanel(){
+	public BorrowerPanel(Connection con){
+		this.con = con;
 	}
 	
 	private void openSearchForm(){
