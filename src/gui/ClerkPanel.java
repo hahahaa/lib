@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -316,7 +316,7 @@ public class ClerkPanel {
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				Clerk.checkoutBooks(bid, callNumber);
+				Clerk.checkoutItems(bid, callNumber);
 			}
 		});
 
