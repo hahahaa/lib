@@ -71,8 +71,7 @@ public class Librarian {
 	 * @param subject	the subject to search for
 	 * @return a report with all the books have been checked out
 	 */
-	public ArrayList<String[]> getCheckedOutReport(String subject)
-	{
+	public ArrayList<String[]> getCheckedOutReport(String subject) {
 		ArrayList<String[]> report = new ArrayList<String[]>();
 		Date dueDate;
 		Calendar cal = java.util.Calendar.getInstance();
@@ -81,17 +80,17 @@ public class Librarian {
 		ResultSet rs;
 		
 		try {
-			if(subject.compareTo("") == 0)
-				ps = con.prepareStatement(	"SELECT Borrowing.callNumber, Borrowing.copyNo, Borrowing.outDate, Borrowing.inDate " +
+			if(subject == null || subject.compareTo("") == 0)
+				ps = con.prepareStatement(	"SELECT callNumber, copyNo, outDate, inDate " +
 											"FROM Borrowing " +
-											"ORDER BY Borrowing.callNumber");
+											"ORDER BY callNumber");
 			else
 			{
 				ps = con.prepareStatement(	"SELECT Borrowing.callNumber, Borrowing.copyNo, Borrowing.outDate, Borrowing.inDate " +
 											"FROM Borrowing, HasSubject " +
 											"WHERE Borrowing.callNumber = HasSubject.callNumber AND HasSubject.subject = ? " +
 											"ORDER BY Borrowing.callNumber");
-				ps.setString(1, subject);
+				ps.setString(1, subject.toUpperCase().trim());
 			}
 			
 			rs = ps.executeQuery();
@@ -142,8 +141,7 @@ public class Librarian {
 	 * @param n	number of books to be shown on the report, must > 0
 	 * @return	a report with the most popular n items in a given year
 	 */
-	public ArrayList<String[]> getPopularReport(int year, int n)
-	{
+	public ArrayList<String[]> getPopularReport(int year, int n) {
 		ArrayList<String[]> report = new ArrayList<String[]>();
 		PreparedStatement ps;
 		ResultSet rs;
@@ -204,17 +202,10 @@ public class Librarian {
 		PreparedStatement ps = con.prepareStatement("SELECT callNumber FROM Book WHERE Book.callNumber = ?");
 		ps.setString(1, callNumber);
 		ResultSet rs = ps.executeQuery();
-		if(rs.next()) {
-			rs.close();
-			ps.close();
-			return true;
-		}
-		else
-		{
-			rs.close();
-			ps.close();
-			return false;
-		}
+		boolean result = rs.next();
+		rs.close();
+		ps.close();		
+		return result;
 	}
 	
 	/**
@@ -222,17 +213,17 @@ public class Librarian {
 	 */
 	private void addOneBookCopy(String callNumber) throws SQLException {
 		int copyNumber;
-		PreparedStatement ps = con.prepareStatement("SELECT MAX(copyNo) as copyNumber FROM BookCopy WHERE BookCopy.callNumber = ?");
+		PreparedStatement ps = con.prepareStatement("SELECT MAX(copyNo) as copyNumber FROM BookCopy WHERE callNumber = ?");
 		ps.setString(1, callNumber);
 		ResultSet rs = ps.executeQuery();
-		if (rs.next()) 
+		if (rs.next()) {
 			copyNumber = rs.getInt("copyNumber");
+			System.out.println("addOneBookCopy: copyNumber = " + copyNumber);
+		}
 		else
-			throw new SQLException("No copyNo is returned");
+			copyNumber = 0;
 		rs.close();
 		
-//		int copyNum = Integer.parseInt(copyNumber);
-//		copyNum++;
 		copyNumber++;
 		ps = con.prepareStatement("INSERT INTO BookCopy VALUES (?,?,?)");
 		ps.setString(1, callNumber);
