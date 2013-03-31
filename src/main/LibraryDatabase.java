@@ -36,7 +36,13 @@ public class LibraryDatabase implements ActionListener
 	 */ 
 	public LibraryDatabase()
 	{
-		mainFrame = new JFrame("User Login");
+		mainFrame = new JFrame("CPSC 304: Project 3");
+//		Container c =mainFrame.getContentPane();
+//		c.setLayout(null);
+		
+		Font bItalic = new Font("Arial", Font.ITALIC, 15);
+//		loginButton.setFont(bItalic);
+		
 
 		JLabel usernameLabel = new JLabel("Enter username: ");
 		JLabel passwordLabel = new JLabel("Enter password: ");
@@ -44,9 +50,14 @@ public class LibraryDatabase implements ActionListener
 		usernameField = new JTextField(10);
 		passwordField = new JPasswordField(10);
 		passwordField.setEchoChar('*');
+		
+		usernameLabel.setFont(bItalic);
+		passwordLabel.setFont(bItalic);
+		
 
 		JButton loginButton = new JButton("Log In");
-
+		loginButton.setFont(bItalic);
+		
 		JPanel contentPane = new JPanel();
 		mainFrame.setContentPane(contentPane);
 
@@ -57,8 +68,16 @@ public class LibraryDatabase implements ActionListener
 		GridBagConstraints c = new GridBagConstraints();
 
 		contentPane.setLayout(gb);
-		contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		contentPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
+		JLabel Jbt1, Jbt2, Jbt3;
+		Jbt1 = new JLabel("Please Sign in to SQLPLUS......   ");
+		Jbt1.setFont(bItalic);
+		
+		contentPane.add(Jbt1);
+		
+		
+		
 		// place the username label 
 		c.gridwidth = GridBagConstraints.RELATIVE;
 		c.insets = new Insets(10, 10, 5, 0);
@@ -71,6 +90,9 @@ public class LibraryDatabase implements ActionListener
 		gb.setConstraints(usernameField, c);
 		contentPane.add(usernameField);
 
+		Jbt2 = new JLabel("                                  ");
+		contentPane.add(Jbt2);
+		
 		// place password label
 		c.gridwidth = GridBagConstraints.RELATIVE;
 		c.insets = new Insets(0, 10, 10, 0);
@@ -109,13 +131,16 @@ public class LibraryDatabase implements ActionListener
 		// center the frame
 		Dimension d = mainFrame.getToolkit().getScreenSize();
 		Rectangle r = mainFrame.getBounds();
-		mainFrame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
+		mainFrame.setSize(640,360);
+		mainFrame.setLocation( 50, 50 );
 
 		// make the window visible
 		mainFrame.setVisible(true);
 
 		// place the cursor in the text field for the username
 		usernameField.requestFocus();
+		
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		try 
 		{
