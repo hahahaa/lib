@@ -214,14 +214,15 @@ public class Clerk {
 		ArrayList<String> list = new ArrayList<String>();
 		try
 		{
-			statement = con.createStatement();
+			PreparedStatement prepStatement;
 			// find bid, name , title, call number, copy no., indate, email 
 			sqlQuery = "SELECT bid, name, title, callNumber, copyNo, inDate, emailAddress" +
                     	"FROM Borrowing, Borrower, Book" +
                     	"WHERE Borrowing.bid = Borrower.bid " +
                     	"and Borrowing.callNumber = Book.callNumber" +
                     	"and inDate < SYSDATE and status = 'out'";
-			result = statement.executeQuery(sqlQuery);
+			prepStatement = con.prepareStatement(sqlQuery);
+			result = prepStatement.executeQuery(sqlQuery);
 			while (result.next()){
 				// store values
 				bids.set(index, result.getInt("bid"));
@@ -233,12 +234,11 @@ public class Clerk {
 				emails.set(index, result.getString("emailAddress"));
 				index++;
 			}
-			statement.close();
+			prepStatement.close();
 			result.close();
 			for (int i = 0; i < index; i++) {
-				list.set(i,"Bid: " + bids.get(i) + "Name: " + names.get(i) + "\n" + "Book Title: " + titles.get(i) +
-						"Call Number: " + callNumbers.get(i) + "Copy Number: " + copyNos.get(i) +
-						"\n" + "Due Date: " + inDates.get(i) + "Email Address: " + emails.get(i));
+				list.set(i, callNumbers.get(i) + ";" +  Integer.toString(copyNos.get(i)) + ";" + titles.get(i) + ";" 
+						+ Integer.toString(bids.get(i)) + ";" + names.get(i));
 			}
 						
 		} catch ( SQLException e ){

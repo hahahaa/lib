@@ -57,8 +57,11 @@ public class ClerkPanel {
 
 	private Connection con;
 	
+	private Clerk clerk;
+	
 	public ClerkPanel(Connection con) {
 		this.con = con;
+		this.clerk = new Clerk(this.con);
 	}
 
 	private void openAddBorrowerForm(){
@@ -438,8 +441,16 @@ public class ClerkPanel {
 		TableColumn tc = overdueTable.getColumnModel().getColumn(5);  
         tc.setCellEditor(overdueTable.getDefaultEditor(Boolean.class));  
         tc.setCellRenderer(overdueTable.getDefaultRenderer(Boolean.class));
+        
+        ArrayList<String> list = clerk.checkOverDueItems();
+        String[] temp;
+		
+        for(int i = 0; i < list.size(); i++){
+        	temp = list.get(i).split(";");
+        	System.out.println(temp);
+    		model.insertRow(overdueTable.getRowCount(),new Object[]{temp[0], temp[1], temp[2], temp[3], temp[4], new Boolean(false)});
+        }
 
-		model.insertRow(overdueTable.getRowCount(),new Object[]{"Call1", "1", "Book1", "11", "Mark", new Boolean(false)});
 		model.insertRow(overdueTable.getRowCount(),new Object[]{"Call2", "2", "Book2", "22", "John", new Boolean(false)});
 		model.insertRow(overdueTable.getRowCount(),new Object[]{"Call3", "3", "Book3", "33", "Sam", new Boolean(false)});
 		model.insertRow(overdueTable.getRowCount(),new Object[]{"Call4", "4", "Book4", "44", "Bill", new Boolean(false)});
