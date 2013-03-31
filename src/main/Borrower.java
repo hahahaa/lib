@@ -91,7 +91,7 @@ public class Borrower {
 
 					prepared2 = con.prepareStatement(
 							"SELECT COUNT(*) " +
-									"FROM Book " +
+									"FROM BookCopy " +
 							"WHERE status = 'out' AND callNumber = ?");
 					prepared2.setString(1, callNumber);
 
@@ -131,7 +131,7 @@ public class Borrower {
 			PreparedStatement prepared = con.prepareStatement(
 					"SELECT Borrowing.callNumber, Borrowing.copyNo, Fine.fid, Fine.amount, Fine.issuedDate " +
 							"FROM Borrowing, Fine " +
-					"WHERE Borrowing.borid = Fine.borid AND Fine.paidDate IS NULL AND Borrowing.bid = ?");
+					"WHERE Borrowing.borid = Fine.borid AND Fine.paidDate IS NULL AND Borrowing.borid = ?");
 			prepared.setInt(1, bid);
 
 			ResultSet result = prepared.executeQuery();
