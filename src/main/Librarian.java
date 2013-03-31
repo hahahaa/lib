@@ -90,7 +90,7 @@ public class Librarian {
 											"FROM Borrowing, HasSubject " +
 											"WHERE Borrowing.callNumber = HasSubject.callNumber AND HasSubject.subject = ? " +
 											"ORDER BY Borrowing.callNumber");
-				ps.setString(1, subject.toUpperCase().trim());
+				ps.setString(1, subject.trim());
 			}
 			
 			rs = ps.executeQuery();
