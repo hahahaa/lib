@@ -69,13 +69,14 @@ public class Clerk {
 
 	}
 
-	public void checkoutItems(int bid, ArrayList<String> callNumbers){
+	public void checkoutItem(int bid, String callNumber){
 		if (hasExpired(bid))
 			return;
 		
-		for (int i = 0; i < callNumbers.size(); i++)
-			checkout(bid, callNumbers.get(i));
-		
+		String[] callNumbers = callNumber.split(";");
+		for(String number : callNumbers) {
+			checkout(bid, number.trim());
+		}
 		return;
 	}
 	
