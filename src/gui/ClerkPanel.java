@@ -60,6 +60,7 @@ public class ClerkPanel {
 		JLabel phoneLabel = new JLabel("Phone:");
 		JLabel emailLabel = new JLabel("Email Address:");
 		JLabel sinOrStNoLabel = new JLabel("SIN/Student #:");
+		final String dateFormat = "MM/dd/yyyy";
 		JLabel expiryDateLabel = new JLabel("Expiry Date (mm/dd/yyyy):");
 		JLabel typeLabel = new JLabel("Type:");
 
@@ -69,7 +70,7 @@ public class ClerkPanel {
 		final JTextField phoneField = new JTextField();
 		final JTextField emailField = new JTextField();
 		final JTextField sinOrStNoField = new JTextField();
-		final JFormattedTextField expiryDateField = new JFormattedTextField(new SimpleDateFormat("MM/dd/yyyy"));
+		final JTextField expiryDateField = new JTextField();
 		String[] types = {"", "Student", "Faculty", "Staff"};
 		final JComboBox typeComboBox = new JComboBox(types);
 		
@@ -166,10 +167,18 @@ public class ClerkPanel {
 							"Error",
 							JOptionPane.ERROR_MESSAGE);
 					return;
-				};
-			
-				Date expiryDate = (Date) expiryDateField.getValue();
+				}
 				
+				Calendar cal = java.util.Calendar.getInstance(); 
+				SimpleDateFormat df = new SimpleDateFormat(dateFormat);
+				java.util.Date tempDate = new java.util.Date(cal.getTimeInMillis());
+				
+				try {
+					tempDate = df.parse(expiryDateField.getText());
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
+				Date expiryDate = new Date(tempDate.getTime());
 				if (expiryDate.equals(null)) {
 					JOptionPane.showMessageDialog(null,
 							"Please fill in an expiry date.",

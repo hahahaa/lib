@@ -38,7 +38,7 @@ public class Clerk {
 		PreparedStatement prepStatement;
 		try{
 
-			String sqlQuery = "INSERT INTO borrower VALUES (bid_count.nextval,?,?,?,?.?.?.?.?)";
+			String sqlQuery = "INSERT INTO borrower VALUES (bid_count.nextval,?,?,?,?,?,?,?,?)";
 			prepStatement = con.prepareStatement(sqlQuery);
 			prepStatement.setString(1, password);
 			prepStatement.setString(2, name);
