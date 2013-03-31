@@ -7,6 +7,7 @@ import java.sql.*;
 import java.io.*;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -36,13 +37,7 @@ public class LibraryDatabase implements ActionListener
 	 */ 
 	public LibraryDatabase()
 	{
-		mainFrame = new JFrame("CPSC 304: Project 3");
-//		Container c =mainFrame.getContentPane();
-//		c.setLayout(null);
-		
-		Font bItalic = new Font("Arial", Font.ITALIC, 15);
-//		loginButton.setFont(bItalic);
-		
+		mainFrame = new JFrame("User Login");
 
 		JLabel usernameLabel = new JLabel("Enter username: ");
 		JLabel passwordLabel = new JLabel("Enter password: ");
@@ -50,14 +45,9 @@ public class LibraryDatabase implements ActionListener
 		usernameField = new JTextField(10);
 		passwordField = new JPasswordField(10);
 		passwordField.setEchoChar('*');
-		
-		usernameLabel.setFont(bItalic);
-		passwordLabel.setFont(bItalic);
-		
 
 		JButton loginButton = new JButton("Log In");
-		loginButton.setFont(bItalic);
-		
+
 		JPanel contentPane = new JPanel();
 		mainFrame.setContentPane(contentPane);
 
@@ -68,16 +58,8 @@ public class LibraryDatabase implements ActionListener
 		GridBagConstraints c = new GridBagConstraints();
 
 		contentPane.setLayout(gb);
-		contentPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+		contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JLabel Jbt1, Jbt2, Jbt3;
-		Jbt1 = new JLabel("Please Sign in to SQLPLUS......   ");
-		Jbt1.setFont(bItalic);
-		
-		contentPane.add(Jbt1);
-		
-		
-		
 		// place the username label 
 		c.gridwidth = GridBagConstraints.RELATIVE;
 		c.insets = new Insets(10, 10, 5, 0);
@@ -90,9 +72,6 @@ public class LibraryDatabase implements ActionListener
 		gb.setConstraints(usernameField, c);
 		contentPane.add(usernameField);
 
-		Jbt2 = new JLabel("                                  ");
-		contentPane.add(Jbt2);
-		
 		// place password label
 		c.gridwidth = GridBagConstraints.RELATIVE;
 		c.insets = new Insets(0, 10, 10, 0);
@@ -131,16 +110,13 @@ public class LibraryDatabase implements ActionListener
 		// center the frame
 		Dimension d = mainFrame.getToolkit().getScreenSize();
 		Rectangle r = mainFrame.getBounds();
-		mainFrame.setSize(640,360);
-		mainFrame.setLocation( 50, 50 );
+		mainFrame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
 
 		// make the window visible
 		mainFrame.setVisible(true);
 
 		// place the cursor in the text field for the username
 		usernameField.requestFocus();
-		
-		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		try 
 		{
@@ -149,7 +125,10 @@ public class LibraryDatabase implements ActionListener
 		}
 		catch (SQLException ex)
 		{
-			System.out.println("Message: " + ex.getMessage());
+			JOptionPane.showMessageDialog(null,
+					"Message: " + ex.getMessage(),
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
 			System.exit(-1);
 		}
 	}
@@ -215,452 +194,6 @@ public class LibraryDatabase implements ActionListener
 		}             
 
 	}
-
-
-//	/*
-//	 * displays simple text interface
-//	 */ 
-//	private void showMenu()
-//	{
-//		int choice;
-//		boolean quit;
-//
-//		quit = false;
-//
-//		try 
-//		{
-//			// disable auto commit mode
-//			con.setAutoCommit(false);
-//
-//			while (!quit)
-//			{
-//				System.out.print("\n\nPlease choose one of the following: \n");
-//				System.out.print("1.  Insert branch\n");
-//				System.out.print("2.  Delete branch\n");
-//				System.out.print("3.  Update branch\n");
-//				System.out.print("4.  Show branch\n");
-//				System.out.print("5.  Quit\n");
-//				System.out.print("6.  do it\n>> ");
-//
-//				choice = Integer.parseInt(in.readLine());
-//
-//				System.out.println(" ");
-//
-//				switch(choice)
-//				{
-//				case 1:  insertBranch(); break;
-//				case 2:  deleteBranch(); break;
-//				case 3:  updateBranch(); break;
-//				case 4:  showBranch(); break;
-//				case 5:  quit = true; break;
-//				case 6:  doIt(); break;
-//				}
-//			}
-//
-//			con.close();
-//			in.close();
-//			System.out.println("\nGood Bye!\n\n");
-//			System.exit(0);
-//		}
-//		catch (IOException e)
-//		{
-//			System.out.println("IOException!");
-//
-//			try
-//			{
-//				con.close();
-//				System.exit(-1);
-//			}
-//			catch (SQLException ex)
-//			{
-//				System.out.println("Message: " + ex.getMessage());
-//			}
-//		}
-//		catch (SQLException ex)
-//		{
-//			System.out.println("Message: " + ex.getMessage());
-//		}
-//	}
-//
-//
-//	/*
-//	 * inserts a branch
-//	 */ 
-//	private void insertBranch()
-//	{
-//		int                bid;
-//		String             bname;
-//		String             baddr;
-//		String             bcity;
-//		int                bphone;
-//		PreparedStatement  ps;
-//
-//		try
-//		{
-//			ps = con.prepareStatement("INSERT INTO branch VALUES (branch_counter.nextval,?,?,?,?)");
-//
-//			//System.out.print("\nBranch ID: ");
-//			//bid = Integer.parseInt(in.readLine());
-//			//ps.setInt(1, bid);
-//
-//			System.out.print("\nBranch Name: ");
-//			bname = in.readLine();
-//			ps.setString(1, bname);
-//
-//			System.out.print("\nBranch Address: ");
-//			baddr = in.readLine();
-//
-//			if (baddr.length() == 0)
-//			{
-//				ps.setString(2, null);
-//			}
-//			else
-//			{
-//				ps.setString(2, baddr);
-//			}
-//
-//			System.out.print("\nBranch City: ");
-//			bcity = in.readLine();
-//			ps.setString(3, bcity);
-//
-//			System.out.print("\nBranch Phone: ");
-//			String phoneTemp = in.readLine();
-//			if (phoneTemp.length() == 0)
-//			{
-//				ps.setNull(4, java.sql.Types.INTEGER);
-//			}
-//			else
-//			{
-//				bphone = Integer.parseInt(phoneTemp);
-//				ps.setInt(4, bphone);
-//			}
-//
-//			ps.executeUpdate();
-//
-//			// commit work 
-//			con.commit();
-//
-//			ps.close();
-//		}
-//		catch (IOException e)
-//		{
-//			System.out.println("IOException!");
-//		}
-//		catch (SQLException ex)
-//		{
-//			System.out.println("Message: " + ex.getMessage());
-//			try 
-//			{
-//				// undo the insert
-//				con.rollback();	
-//			}
-//			catch (SQLException ex2)
-//			{
-//				System.out.println("Message: " + ex2.getMessage());
-//				System.exit(-1);
-//			}
-//		}
-//	}
-//
-//
-//	/*
-//	 * deletes a branch
-//	 */ 
-//	private void deleteBranch()
-//	{
-//		int                bid;
-//		PreparedStatement  ps;
-//
-//		try
-//		{
-//			ps = con.prepareStatement("DELETE FROM branch WHERE branch_id = ?");
-//
-//			System.out.print("\nBranch ID: ");
-//			bid = Integer.parseInt(in.readLine());
-//			ps.setInt(1, bid);
-//
-//			int rowCount = ps.executeUpdate();
-//
-//			if (rowCount == 0)
-//			{
-//				System.out.println("\nBranch " + bid + " does not exist!");
-//			}
-//
-//			con.commit();
-//
-//			ps.close();
-//		}
-//		catch (IOException e)
-//		{
-//			System.out.println("IOException!");
-//		}
-//		catch (SQLException ex)
-//		{
-//			System.out.println("Message: " + ex.getMessage());
-//
-//			try 
-//			{
-//				con.rollback();	
-//			}
-//			catch (SQLException ex2)
-//			{
-//				System.out.println("Message: " + ex2.getMessage());
-//				System.exit(-1);
-//			}
-//		}
-//	}
-//
-//
-//	/*
-//	 * updates the name of a branch
-//	 */ 
-//	private void updateBranch()
-//	{
-//		int                bid;
-//		String             bname;
-//		PreparedStatement  ps;
-//
-//		try
-//		{
-//			ps = con.prepareStatement("UPDATE branch SET branch_name = ? WHERE branch_id = ?");
-//
-//			System.out.print("\nBranch ID: ");
-//			bid = Integer.parseInt(in.readLine());
-//			ps.setInt(2, bid);
-//
-//			System.out.print("\nBranch Name: ");
-//			bname = in.readLine();
-//			ps.setString(1, bname);
-//
-//			int rowCount = ps.executeUpdate();
-//			if (rowCount == 0)
-//			{
-//				System.out.println("\nBranch " + bid + " does not exist!");
-//			}
-//
-//			con.commit();
-//
-//			ps.close();
-//		}
-//		catch (IOException e)
-//		{
-//			System.out.println("IOException!");
-//		}
-//		catch (SQLException ex)
-//		{
-//			System.out.println("Message: " + ex.getMessage());
-//
-//			try 
-//			{
-//				con.rollback();	
-//			}
-//			catch (SQLException ex2)
-//			{
-//				System.out.println("Message: " + ex2.getMessage());
-//				System.exit(-1);
-//			}
-//		}	
-//	}
-//
-//
-//	/*
-//	 * display information about branches
-//	 */ 
-//	private void showBranch()
-//	{
-//		String     bid;
-//		String     bname;
-//		String     baddr;
-//		String     bcity;
-//		String     bphone;
-//		Statement  stmt;
-//		ResultSet  rs;
-//
-//		try
-//		{
-//			stmt = con.createStatement();
-//
-//			rs = stmt.executeQuery("SELECT * FROM branch");
-//
-//			// get info on ResultSet
-//			ResultSetMetaData rsmd = rs.getMetaData();
-//
-//			// get number of columns
-//			int numCols = rsmd.getColumnCount();
-//
-//			System.out.println(" ");
-//
-//			// display column names;
-//			for (int i = 0; i < numCols; i++)
-//			{
-//				// get column name and print it
-//
-//				System.out.printf("%-15s", rsmd.getColumnName(i+1));    
-//			}
-//
-//			System.out.println(" ");
-//
-//			while(rs.next())
-//			{
-//				// for display purposes get everything from Oracle 
-//				// as a string
-//
-//				// simplified output formatting; truncation may occur
-//
-//				bid = rs.getString("branch_id");
-//				System.out.printf("%-10.10s", bid);
-//
-//				bname = rs.getString("branch_name");
-//				System.out.printf("%-20.20s", bname);
-//
-//				baddr = rs.getString("branch_addr");
-//				if (rs.wasNull())
-//				{
-//					System.out.printf("%-20.20s", " ");
-//				}
-//				else
-//				{
-//					System.out.printf("%-20.20s", baddr);
-//				}
-//
-//				bcity = rs.getString("branch_city");
-//				System.out.printf("%-15.15s", bcity);
-//
-//				bphone = rs.getString("branch_phone");
-//				if (rs.wasNull())
-//				{
-//					System.out.printf("%-15.15s\n", " ");
-//				}
-//				else
-//				{
-//					System.out.printf("%-15.15s\n", bphone);
-//				}      
-//			}
-//
-//			// close the statement; 
-//			// the ResultSet will also be closed
-//			stmt.close();
-//		}
-//		catch (SQLException ex)
-//		{
-//			System.out.println("Message: " + ex.getMessage());
-//		}	
-//	}
-//
-//	/*
-//	 * do it
-//	 */
-//	private void doIt() throws IOException
-//	{
-//		System.out.println("do it:\n>> ");
-//		Statement stmt;
-//		try
-//		{
-//			//			String sql = "ALTER SEQUENCE branch_counter MAXVALUE 1000";
-//			//			//sql = in.readLine();
-//			//			stmt = con.createStatement();
-//			//			stmt.executeQuery(sql);
-//			//			con.commit();
-//			//			stmt.close();
-//
-//			//stmt = con.createStatement();
-////			stmt.executeUpdate("INSERT INTO branch VALUES (branch_counter.nextval, 'West', " +
-////	                   "'7291 W.16th', 'Coquitlam', 5559238)");
-////			con.commit();
-////			//ResultSet rs = stmt.executeQuery("SELECT currval('branch_counter')");
-////			ResultSet rs = stmt.executeQuery("SELECT setval('branch_counter', 10)");
-////			int currval = rs.getInt(1);
-////			System.out.println(currval);
-//	
-//			stmt = con.createStatement();
-////			stmt.executeUpdate("INSERT INTO branch VALUES (branch_counter.nextval, 'david', " +
-////	                   "'7291 W.16th', 'Coquitlam', 5559238)");
-////			con.commit();
-//			
-//			ResultSet rs = stmt.executeQuery("SELECT * FROM branch WHERE " +
-//	                                 "branch_id = branch_counter.currval");
-////
-//			// get info on ResultSet
-//			String     bid;
-//			String     bname;
-//			String     baddr;
-//			String     bcity;
-//			String     bphone;
-//			ResultSetMetaData rsmd = rs.getMetaData();
-//
-//			// get number of columns
-//			int numCols = rsmd.getColumnCount();
-//
-//			System.out.println(" ");
-//
-//			// display column names;
-//			for (int i = 0; i < numCols; i++)
-//			{
-//				// get column name and print it
-//
-//				System.out.printf("%-15s", rsmd.getColumnName(i+1));    
-//			}
-//
-//			System.out.println(" ");
-//
-//			while(rs.next())
-//			{
-//				// for display purposes get everything from Oracle 
-//				// as a string
-//
-//				// simplified output formatting; truncation may occur
-//
-//				bid = rs.getString("branch_id");
-//				System.out.printf("%-10.10s", bid);
-//
-//				bname = rs.getString("branch_name");
-//				System.out.printf("%-20.20s", bname);
-//
-//				baddr = rs.getString("branch_addr");
-//				if (rs.wasNull())
-//				{
-//					System.out.printf("%-20.20s", " ");
-//				}
-//				else
-//				{
-//					System.out.printf("%-20.20s", baddr);
-//				}
-//
-//				bcity = rs.getString("branch_city");
-//				System.out.printf("%-15.15s", bcity);
-//
-//				bphone = rs.getString("branch_phone");
-//				if (rs.wasNull())
-//				{
-//					System.out.printf("%-15.15s\n", " ");
-//				}
-//				else
-//				{
-//					System.out.printf("%-15.15s\n", bphone);
-//				}      
-//			}
-//
-//			// close the statement; 
-//			// the ResultSet will also be closed
-//			stmt.close();
-//
-//		}
-//		catch (SQLException ex)
-//		{
-//			System.out.println("Message: " + ex.getMessage());
-//
-//			try 
-//			{
-//				con.rollback();	
-//			}
-//			catch (SQLException ex2)
-//			{
-//				System.out.println("Message: " + ex2.getMessage());
-//				System.exit(-1);
-//			}
-//		}	
-//	}
-
 	
 	public static void main(String args[])
 	{
