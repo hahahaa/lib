@@ -213,7 +213,7 @@ public class Borrower {
 		}
 	}
 
-	private boolean accountValidated(int bid, String password){
+	public boolean accountValidated(int bid, String password){
 
 		PreparedStatement prepared;
 		ResultSet result;
