@@ -4,16 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.sql.Date;
 
-import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
@@ -25,13 +23,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-
-import java.sql.Connection;
-
 import main.Clerk;
 
 public class ClerkPanel {
@@ -231,7 +224,7 @@ public class ClerkPanel {
 					return;
 				}
 
-				Clerk.addBorrower(password, name, address, phone, email, sinOrStNo, expiryDate, type);
+				clerk.addBorrower(password, name, address, phone, email, sinOrStNo, expiryDate, type);
 				frame.setVisible(false);
 			}
 		});
@@ -320,7 +313,7 @@ public class ClerkPanel {
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				Clerk.checkoutItems(bid, callNumbers);
+				clerk.checkoutItems(bid, callNumbers);
 			}
 		});
 
@@ -409,7 +402,7 @@ public class ClerkPanel {
 					return;
 				};
 				
-				Clerk.processReturn(callNumber, copyNo);
+				clerk.processReturn(callNumber, copyNo);
 			}
 		});
 
@@ -450,11 +443,6 @@ public class ClerkPanel {
         	System.out.println(temp);
     		model.insertRow(overdueTable.getRowCount(),new Object[]{temp[0], temp[1], temp[2], temp[3], temp[4], new Boolean(false)});
         }
-
-		model.insertRow(overdueTable.getRowCount(),new Object[]{"Call2", "2", "Book2", "22", "John", new Boolean(false)});
-		model.insertRow(overdueTable.getRowCount(),new Object[]{"Call3", "3", "Book3", "33", "Sam", new Boolean(false)});
-		model.insertRow(overdueTable.getRowCount(),new Object[]{"Call4", "4", "Book4", "44", "Bill", new Boolean(false)});
-		
 		
 		Font bItalic = new Font("Arial", Font.ITALIC, 15);
 //		loginButton.setFont(bItalic);

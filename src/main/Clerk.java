@@ -1,6 +1,5 @@
 package main;
 
-import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -15,7 +14,7 @@ import javax.swing.JOptionPane;
 
 public class Clerk {
 
-	private static Connection con;
+	private Connection con;
 
 	public Clerk(Connection con) {
 		this.con = con;
@@ -34,7 +33,7 @@ public class Clerk {
 	 * @param type
 	 */
 
-	public static void addBorrower(String password, String name, String address, int phone, 
+	public void addBorrower(String password, String name, String address, int phone, 
 			String emailAddress, int sinOrStNo, Date expiryDate, String type){
 		PreparedStatement prepStatement;
 		try{
@@ -80,7 +79,7 @@ public class Clerk {
 
 	}
 
-	public static void checkoutItems(int bid, ArrayList<String> callNumbers){
+	public void checkoutItems(int bid, ArrayList<String> callNumbers){
 		if (hasExpired(bid))
 			return;
 		for (int i = 0; i < callNumbers.size(); i++){
@@ -95,7 +94,7 @@ public class Clerk {
 	 * @param callNumber
 	 * @param copyNo
 	 */
-	public static void processReturn(String callNumber, int copyNo){
+	public void processReturn(String callNumber, int copyNo){
 		PreparedStatement prepStatement;
 		ResultSet result;
 		String sqlQuery;
@@ -214,8 +213,8 @@ public class Clerk {
 		ArrayList<String> list = new ArrayList<String>();
 		try
 		{
+		
 			statement = con.createStatement();
-			PreparedStatement prepStatement;
 			
 			// find bid, name , title, call number, copy no., indate, email 
 			sqlQuery = "SELECT distinct Borrower.bid, Borrower.name, Borrowing.copyNo, Book.title, Borrowing.callNumber " +
@@ -225,20 +224,19 @@ public class Clerk {
 			result = statement.executeQuery(sqlQuery);
 			while (result.next()){
 				// store values
-				bids.set(index, result.getInt("bid"));
-				names.set(index, result.getString("name"));
-				titles.set(index, result.getString("title"));
-				callNumbers.set(index, result.getString("callNumber"));
-				copyNos.set(index, result.getInt("copyNo"));
-				inDates.set(index, result.getDate("inDate"));
-				emails.set(index, result.getString("emailAddress"));
+				bids.add(result.getInt("bid"));
+				names.add(result.getString("name"));
+				titles.add(result.getString("title"));
+				callNumbers.add(result.getString("callNumber"));
+				copyNos.add(result.getInt("copyNo"));
+				//inDates.add(result.getDate("inDate"));
+				//emails.add(result.getString("emailAddress"));
 				index++;
 			}
 			statement.close();
-			//prepStatement.close();
 			result.close();
 			for (int i = 0; i < index; i++) {
-				list.set(i, callNumbers.get(i) + ";" +  Integer.toString(copyNos.get(i)) + ";" + titles.get(i) + ";" 
+				list.add(callNumbers.get(i) + ";" +  Integer.toString(copyNos.get(i)) + ";" + titles.get(i) + ";" 
 						+ Integer.toString(bids.get(i)) + ";" + names.get(i));
 			}
 						
@@ -253,7 +251,7 @@ public class Clerk {
 	 * @param bid
 	 * @return true if borrower is expired, false otherwise
 	 */
-	private static boolean hasExpired(int bid){
+	private boolean hasExpired(int bid){
 		PreparedStatement prepStatement;
 		ResultSet result;
 		boolean hasExpired = true;
@@ -290,7 +288,7 @@ public class Clerk {
 	 * @param bid
 	 * @param callNumber
 	 */
-	private static void checkout(int bid, String callNumber){
+	private void checkout(int bid, String callNumber){
 		PreparedStatement prepStatement;
 		PreparedStatement prepStatement2;
 		ResultSet result;
@@ -368,7 +366,7 @@ public class Clerk {
 	 * @param e 
 	 * 		exception thrown
 	 */
-	private static void displayExceptionError(Exception e){
+	private void displayExceptionError(Exception e){
 		JOptionPane.showMessageDialog(null,
 				e.getMessage(),
 				"Error",
@@ -386,7 +384,7 @@ public class Clerk {
 	 * @return returns the 'type' if found,	returns null otherwise
 	 * 	
 	 */
-	private static String getBorrowerType(int bid) throws SQLException{
+	private String getBorrowerType(int bid) throws SQLException{
 
 		PreparedStatement  prepStatement;
 		ResultSet  result;
@@ -423,7 +421,7 @@ public class Clerk {
 	 * @param borrowerType
 	 * @return +14 if Student, +84 if Faculty, +42 if Staff,  0 otherwise
 	 */
-	private static Date getReturnDate(String borrowerType) {
+	private Date getReturnDate(String borrowerType) {
 		Calendar cal = java.util.Calendar.getInstance(); 
 		Date currDate = new Date(cal.getTimeInMillis());	
 		int borrowDuration;
@@ -455,7 +453,7 @@ public class Clerk {
 	 * @param callNumber
 	 * @return true if the book is on hold, false otherwise
 	 */
-	private static int isOnHold(String callNumber) throws SQLException{
+	private int isOnHold(String callNumber) throws SQLException{
 		int bid = -1;
 		PreparedStatement prepStatement;
 		ResultSet result;
