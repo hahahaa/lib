@@ -214,15 +214,15 @@ public class Clerk {
 		ArrayList<String> list = new ArrayList<String>();
 		try
 		{
+			statement = con.createStatement();
 			PreparedStatement prepStatement;
+			
 			// find bid, name , title, call number, copy no., indate, email 
-			sqlQuery = "SELECT bid, name, title, callNumber, copyNo, inDate, emailAddress" +
-                    	"FROM Borrowing, Borrower, Book" +
-                    	"WHERE Borrowing.bid = Borrower.bid " +
-                    	"and Borrowing.callNumber = Book.callNumber" +
-                    	"and inDate < SYSDATE and status = 'out'";
-			prepStatement = con.prepareStatement(sqlQuery);
-			result = prepStatement.executeQuery(sqlQuery);
+			sqlQuery = "SELECT distinct Borrower.bid, Borrower.name, Borrowing.copyNo, Book.title, Borrowing.callNumber " +
+					"FROM Borrowing, Borrower, Book, BookCopy WHERE Borrowing.bid = Borrower.bid and " +
+					"Borrowing.callNumber = Book.callNumber and BookCopy.callNumber = Borrowing.callNumber " +
+					"and Borrowing.inDate < SYSDATE and BookCopy.status = 'out'";
+			result = statement.executeQuery(sqlQuery);
 			while (result.next()){
 				// store values
 				bids.set(index, result.getInt("bid"));
@@ -234,7 +234,8 @@ public class Clerk {
 				emails.set(index, result.getString("emailAddress"));
 				index++;
 			}
-			prepStatement.close();
+			statement.close();
+			//prepStatement.close();
 			result.close();
 			for (int i = 0; i < index; i++) {
 				list.set(i, callNumbers.get(i) + ";" +  Integer.toString(copyNos.get(i)) + ";" + titles.get(i) + ";" 
