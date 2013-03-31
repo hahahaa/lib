@@ -53,27 +53,17 @@ public class Clerk {
 			con.commit();
 			prepStatement.close();
 
-			// notify user 
 			JOptionPane.showMessageDialog(null,
 					"New Borrower added",
 					"Notification",
 					JOptionPane.INFORMATION_MESSAGE);
 
 		} catch(SQLException e){
-			// show error
-			JOptionPane.showMessageDialog(null, 
-					e.getMessage(), 
-					"Error", 
-					JOptionPane.ERROR_MESSAGE);
+			displayExceptionError(e);
 			try {
-				// undo insert
 				con.rollback();
 			} catch (SQLException e1) {
-				// show error
-				JOptionPane.showMessageDialog(null, 
-						e.getMessage(), 
-						"Error", 
-						JOptionPane.ERROR_MESSAGE);			
+				displayExceptionError(e1);
 			}
 		}
 
@@ -82,11 +72,13 @@ public class Clerk {
 	public void checkoutItems(int bid, ArrayList<String> callNumbers){
 		if (hasExpired(bid))
 			return;
-		for (int i = 0; i < callNumbers.size(); i++){
+		
+		for (int i = 0; i < callNumbers.size(); i++)
 			checkout(bid, callNumbers.get(i));
-		}
+		
 		return;
 	}
+	
 	/**
 	 * processes the return of a book with the corresponding callNumber
 	 * and copyNo
@@ -101,6 +93,7 @@ public class Clerk {
 		Calendar cal = java.util.Calendar.getInstance(); 
 		Date currDate = new Date(cal.getTimeInMillis());	
 		Date dueDate;
+		@SuppressWarnings("unused")
 		int bid;
 		int borid;
 		int bidToNotify;
@@ -109,11 +102,13 @@ public class Clerk {
 		try{
 			// find out the borrower of the book
 			sqlQuery = "SELECT borid, bid, inDate, status" +
-					   "FROM Borrowing, BookCopy " +
-					   "WHERE Borrowing.callNumber = BookCopy.callNumber " +
-					   "AND Borrowing.CopyNo = BookCopy.copyNo AND callNumber = ? " +
-					   "AND copyNo = ? AND status = 'out' " +
-					   "ORDER BY outDate DESC";
+					    "FROM Borrowing, BookCopy" +  
+					    "WHERE Borrowing.callNumber=BookCopy.callNumber AND" +
+					    "Borrowing.copyNo = BookCopy.copyNo AND" +
+					    "Borrowing.callNumber = 1001 AND Borrowing.copyNo = 1 AND" +
+					    "BookCopy.status = 'out'"+
+					    "ORDER BY outDate DESC";
+
 			prepStatement = con.prepareStatement(sqlQuery);
 			prepStatement.setString(1, callNumber);
 			prepStatement.setInt(2, copyNo);
@@ -207,8 +202,8 @@ public class Clerk {
 		ArrayList<String> titles = new ArrayList<String>();
 		ArrayList<String> callNumbers = new ArrayList<String>();
 		ArrayList<Integer> copyNos = new ArrayList<Integer>();
-		ArrayList<Date> inDates = new ArrayList<Date>();
-		ArrayList<String> emails = new ArrayList<String>();
+		//ArrayList<Date> inDates = new ArrayList<Date>();
+		//ArrayList<String> emails = new ArrayList<String>();
 		
 		ArrayList<String> list = new ArrayList<String>();
 		try
@@ -347,17 +342,6 @@ public class Clerk {
 			return;
 		}	
 
-	}
-
-	/**
-	 * Checks if string is empty
-	 * @param string
-	 */
-	private boolean isEmpty(String string){
-		if (string.compareTo("") == 0)
-			return true;
-		else 
-			return false;
 	}
 
 	/**

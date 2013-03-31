@@ -8,8 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -25,25 +28,14 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
 import main.Clerk;
 
 public class ClerkPanel {
-
-	// Add Borrower form fields
-	private JTextField passwordField;
-	private JTextField nameField;
-	private JTextField addressField;
-	private JTextField phoneField;
-	private JTextField emailField;
-	private JTextField sinOrStNoField;
-	private JFormattedTextField expiryDateField;
-	private JComboBox typeComboBox;
 	
-	// Checkout form fields
 	private JTextField bidField;
 	private JTextField callNumberField;
 	
-	// Return form fields;
 	private JTextField copyNoField;
 	
 	private JPanel mainPanel;
@@ -58,54 +50,32 @@ public class ClerkPanel {
 	}
 
 	private void openAddBorrowerForm(){
-		// Add borrower Form
 		JPanel addBorrowerForm = new JPanel();
-		// Set form layout
 		addBorrowerForm.setLayout(new GridLayout(0, 2, 10, 10));
 		addBorrowerForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
-
-		Font bItalic = new Font("Arial", Font.ITALIC, 15);
-//		loginButton.setFont(bItalic);
 		
-		// Field Labels
-		JLabel passwordLabel = new JLabel("Password: ");
-		JLabel nameLabel = new JLabel("Name: ");
-		JLabel addressLabel = new JLabel("Address: ");
-		JLabel phoneLabel = new JLabel("Phone: ");
-		JLabel emailLabel = new JLabel("Email Address: ");
-		JLabel sinOrStNoLabel = new JLabel("SIN/Student #: ");
-		JLabel expiryDateLabel = new JLabel("Expiry Date(dd/mm/yyyy): ");
-		JLabel typeLabel = new JLabel("Type: ");
+		JLabel passwordLabel = new JLabel("Password:");
+		JLabel nameLabel = new JLabel("Name:");
+		JLabel addressLabel = new JLabel("Address:");
+		JLabel phoneLabel = new JLabel("Phone:");
+		JLabel emailLabel = new JLabel("Email Address:");
+		JLabel sinOrStNoLabel = new JLabel("SIN/Student #:");
+		JLabel expiryDateLabel = new JLabel("Expiry Date (mm/dd/yyyy):");
+		JLabel typeLabel = new JLabel("Type:");
 
-		// Fields
-		passwordField = new JTextField(10);
-		nameField = new JTextField(10);
-		addressField = new JTextField(10);
-		phoneField = new JTextField(10);
-		emailField = new JTextField(10);
-		sinOrStNoField = new JTextField(10);
-		expiryDateField = new JFormattedTextField(new SimpleDateFormat("dd/MM/yyyy"));
-		
-		//typeField = new JTextField(10);
+		final JTextField passwordField = new JTextField();
+		final JTextField nameField = new JTextField();
+		final JTextField addressField = new JTextField();
+		final JTextField phoneField = new JTextField();
+		final JTextField emailField = new JTextField();
+		final JTextField sinOrStNoField = new JTextField();
+		final JFormattedTextField expiryDateField = new JFormattedTextField(new SimpleDateFormat("MM/dd/yyyy"));
 		String[] types = {"", "Student", "Faculty", "Staff"};
-		typeComboBox = new JComboBox(types);
+		final JComboBox typeComboBox = new JComboBox(types);
 		
-		// Buttons
 		JButton addButton = new JButton("Add");
 		JButton cancelButton = new JButton("Cancel");
-		
-		passwordLabel.setFont(bItalic);
-		nameLabel.setFont(bItalic);
-		addressLabel.setFont(bItalic);
-		phoneLabel.setFont(bItalic);
-		emailLabel.setFont(bItalic);
-		sinOrStNoLabel.setFont(bItalic);
-		expiryDateLabel.setFont(bItalic);
-		typeLabel.setFont(bItalic);
-		addButton.setFont(bItalic);
-		cancelButton.setFont(bItalic);
 
-		// Add components to panel
 		addBorrowerForm.add(nameLabel);
 		addBorrowerForm.add(nameField);
 		addBorrowerForm.add(passwordLabel);
@@ -123,33 +93,25 @@ public class ClerkPanel {
 		addBorrowerForm.add(typeLabel);
 		addBorrowerForm.add(typeComboBox);
 
-
 		addBorrowerForm.add(cancelButton);
 		addBorrowerForm.add(addButton);
 		
-		// Window
 		final JFrame frame = new JFrame("Add Borrower");
-		// Window Properties
 		frame.pack();
 		frame.setVisible(true);
-
-		
-		//Add content to the window.
 		frame.add(addBorrowerForm, BorderLayout.CENTER);
-		
 		frame.setVisible(true);
 		frame.setResizable(true);
-		frame.setSize(640,400);
-		frame.setLocation( 50, 50 );
+		frame.setSize(500,400);
+		frame.setLocation(50,50);
 
-		// Button Listeners
 		addButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{	
 				String password = passwordField.getText();
 				if (password.equals("")) {
 					JOptionPane.showMessageDialog(null,
-							"Please fill in a password.",
+							"Please enter a password",
 							"Error",
 							JOptionPane.ERROR_MESSAGE);
 					return;
@@ -158,7 +120,7 @@ public class ClerkPanel {
 				String name = nameField.getText();
 				if (name.equals("")) {
 					JOptionPane.showMessageDialog(null,
-							"Please fill in a name.",
+							"Please enter your name",
 							"Error",
 							JOptionPane.ERROR_MESSAGE);
 					return;
@@ -167,7 +129,7 @@ public class ClerkPanel {
 				String address = addressField.getText();
 				if (address.equals("")) {
 					JOptionPane.showMessageDialog(null,
-							"Please fill in an address.",
+							"Please enter your address",
 							"Error",
 							JOptionPane.ERROR_MESSAGE);
 					return;
@@ -179,7 +141,7 @@ public class ClerkPanel {
 				}
 				catch(NumberFormatException numExcept){
 					JOptionPane.showMessageDialog(null,
-							"Invalid phone number.",
+							"Please enter a valid phone number",
 							"Error",
 							JOptionPane.ERROR_MESSAGE);
 					return;
@@ -188,7 +150,7 @@ public class ClerkPanel {
 				String email = emailField.getText();
 				if (email.equals("")) {
 					JOptionPane.showMessageDialog(null,
-							"Please fill in an email address.",
+							"Please enter your an email address",
 							"Error",
 							JOptionPane.ERROR_MESSAGE);
 					return;
@@ -200,13 +162,14 @@ public class ClerkPanel {
 				}
 				catch(NumberFormatException numExcept){
 					JOptionPane.showMessageDialog(null,
-							"Invalid SIN/Student number.",
+							"Invalid SIN/Student number",
 							"Error",
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				};
-
+			
 				Date expiryDate = (Date) expiryDateField.getValue();
+				
 				if (expiryDate.equals(null)) {
 					JOptionPane.showMessageDialog(null,
 							"Please fill in an expiry date.",
@@ -419,15 +382,15 @@ public class ClerkPanel {
 		
 		JPanel overdueForm = new JPanel();
 
-		overdueForm.setLayout(new GridLayout(0, 1, 10, 10));
 		overdueForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
+
+		overdueForm.setLayout(new GridLayout(0, 1, 10, 10));
 		
 		final String[] columnNames = {"Call Number", "Copy #", "Title", "Bid", "Name", "Select"};
 		Object[][] data = {};
 
 		final DefaultTableModel model = new DefaultTableModel(data,columnNames);
 
-	
 		// Add table to view items
 		JTable overdueTable = new JTable(model);
 		
@@ -521,24 +484,13 @@ public class ClerkPanel {
 	public JComponent getClerkPanel(){
 
 		mainPanel = new JPanel();
-		mainPanel.setLayout(new GridLayout(0, 1, 10, 10));
+		mainPanel.setLayout(new GridLayout(0, 2, 10, 10));
 		mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10) );
 		
-		Font bItalic = new Font("Arial", Font.ITALIC, 30);
-		
-		
-		
 		JButton addBorrowerButton = new JButton("Add Borrower");
-		addBorrowerButton.setFont(bItalic);
-		
 		JButton checkoutButton = new JButton("Checkout");
-		checkoutButton.setFont(bItalic);
-		
 		JButton processReturnButton = new JButton("Process Return");
-		processReturnButton.setFont(bItalic);
-		
 		JButton checkOverdueButton = new JButton("Check Overdue");
-		checkOverdueButton.setFont(bItalic);
 
 		addBorrowerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
