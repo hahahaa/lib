@@ -4,8 +4,6 @@ import gui.Menu;
 
 import java.sql.*;
 
-import java.io.*;
-
 import javax.swing.*;
 
 import java.awt.*;
@@ -18,9 +16,6 @@ import java.awt.event.*;
  */ 
 public class LibraryDatabase implements ActionListener
 {
-	// command line reader 
-	private BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-
 	private Connection con;
 
 	// user is allowed 3 login attempts
@@ -30,7 +25,6 @@ public class LibraryDatabase implements ActionListener
 	private JTextField usernameField;
 	private JPasswordField passwordField;
 	private JFrame mainFrame;
-	private Menu menu;
 
 	/*
 	 * constructs login window and loads JDBC driver
@@ -173,7 +167,7 @@ public class LibraryDatabase implements ActionListener
 			// if the username and password are valid, 
 			// remove the login window and display a text menu 
 			mainFrame.dispose();
-			menu = new Menu(con);
+			new Menu(con);
 		}
 		else
 		{
