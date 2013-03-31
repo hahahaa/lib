@@ -147,16 +147,15 @@ public class BorrowerPanel {
 		// Add checkout Form
 		JPanel accountForm = new JPanel();
 		// Set form layout
-		accountForm.setLayout(new GridLayout(0, 3, 10, 10));
+		accountForm.setLayout(new GridLayout(0, 1, 10, 10));
 		accountForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
 		
 		Font bItalic = new Font("Arial", Font.ITALIC, 15);
-//		loginButton.setFont(bItalic);
 		
 		// Buttons
-		JButton borrowedButton = new JButton("Borrowed Items");
-		JButton finesButton = new JButton("Oustanding Fines");
-		JButton holdButton = new JButton("Items on Hold");
+		JButton borrowedButton = new JButton("Check Borrowed Books");
+		JButton finesButton = new JButton("Check Oustanding Fines");
+		JButton holdButton = new JButton("Check Hold Request");
 		
 		borrowedButton.setFont(bItalic);
 		finesButton.setFont(bItalic);
@@ -168,16 +167,15 @@ public class BorrowerPanel {
 		accountForm.add(holdButton);
 
 		// Window
-		final JFrame frame = new JFrame("Account Information");
+		JFrame frame = new JFrame("Account Information");
+		
 		// Window Properties
 		frame.pack();
 		frame.setVisible(true);
-		frame.setSize(300, 125);
-		//Add content to the window.
 		frame.add(accountForm, BorderLayout.CENTER);
 
 		frame.setResizable(true);
-		frame.setSize(550,360/3);
+		frame.setSize(300,200);
 		frame.setLocation( 100, 140 );
 
 		// Button Listeners
@@ -286,47 +284,63 @@ public class BorrowerPanel {
 	}
 	
 	private void openBorrowedForm(){
-		// Add check overdue Form
-		JPanel borrowedForm = new JPanel();
-		
-		final String[] columnNames = {"Call Number", "Copy #", "Title", "Out Date", "Due Date", "Out"};
-		Object[][] data = {};
+		// Add Book Form
+				JPanel addBookForm = new JPanel();
+				// Set form layout
+				addBookForm.setLayout(new GridLayout(0, 2, 10, 10));
+				addBookForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
 
-		final DefaultTableModel model = new DefaultTableModel(data,columnNames);
+				// Field Labels
+				JLabel callNumberLabel = new JLabel("Call Number: ");
+				JLabel isbnLabel = new JLabel("ISBN: ");
+				JLabel titleLabel = new JLabel("Title: ");
+				JLabel mainAuthorLabel = new JLabel("Main Author: ");
+				JLabel publisherLabel = new JLabel("Publisher: ");
+				JLabel yearLabel = new JLabel("Year: ");
 
-	
-		// Add table to view items
-		JTable borrowedTable = new JTable(model);
-		
-		TableColumn tc = borrowedTable.getColumnModel().getColumn(5);  
-        tc.setCellEditor(borrowedTable.getDefaultEditor(Boolean.class));  
-        tc.setCellRenderer(borrowedTable.getDefaultRenderer(Boolean.class));
+				// Fields
+				JTextField callNumberField = new JTextField(20);
+				JTextField isbnField = new JTextField(20);
+				JTextField titleField = new JTextField(20);
+				JTextField mainAuthorField = new JTextField(20);
+				JTextField publisherField = new JTextField(20);
+				JTextField yearField = new JTextField(10);
 
-		model.insertRow(borrowedTable.getRowCount(),new Object[]{"Call1", "1", "Book1", "date1", "date11", new Boolean(false)});
-		model.insertRow(borrowedTable.getRowCount(),new Object[]{"Call2", "2", "Book2", "date2", "date22", new Boolean(false)});
-		model.insertRow(borrowedTable.getRowCount(),new Object[]{"Call3", "3", "Book3", "date3", "date33", new Boolean(false)});
-		model.insertRow(borrowedTable.getRowCount(),new Object[]{"Call4", "4", "Book4", "date4", "date44", new Boolean(false)});
-		
-		
-		// Add table to view items
-		JScrollPane scrollPane = new JScrollPane(borrowedTable);
-		
-		// Add components to panel
-		scrollPane.setPreferredSize(new Dimension(480, 200));
-		borrowedForm.add(scrollPane, BorderLayout.PAGE_START);
+				// Buttons
+				JButton addButton = new JButton("Add");
+				JButton cancelButton = new JButton("Cancel");
 
-		// Window
-		final JFrame frame = new JFrame("Borrowed Items");
-		// Window Properties
-		frame.pack();
-		frame.setVisible(true);
+				// Add components to panel
+				addBookForm.add(callNumberLabel);
+				addBookForm.add(callNumberField);
+				addBookForm.add(isbnLabel);
+				addBookForm.add(isbnField);
+				addBookForm.add(titleLabel);
+				addBookForm.add(titleField);
+				addBookForm.add(mainAuthorLabel);
+				addBookForm.add(mainAuthorField);
+				addBookForm.add(publisherLabel);
+				addBookForm.add(publisherField);
+				addBookForm.add(yearLabel);
+				addBookForm.add(yearField);
+				addBookForm.add(addButton);
+				addBookForm.add(cancelButton);
 
-		frame.add(borrowedForm, BorderLayout.CENTER);
-		
-		frame.setResizable(true);
-		frame.setSize(640,360/2);
-		frame.setLocation( 50, 140 );
-		// Button Listeners
+				// Window
+				final JFrame frame = new JFrame("Add Book");
+				// Window Properties
+				frame.pack();
+				frame.setVisible(true);
+				frame.setResizable(false);
+				frame.setSize(300, 300);
+
+				//Add content to the window.
+				frame.add(addBookForm, BorderLayout.CENTER);
+
+				// center the frame
+				Dimension d = frame.getToolkit().getScreenSize();
+				Rectangle r = frame.getBounds();
+				frame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
 
 	}
 
@@ -512,23 +526,23 @@ public class BorrowerPanel {
 	public JComponent getBorrowerPanel(){
 		
 		mainPanel = new JPanel();
-		mainPanel.setLayout(new GridLayout(0, 1, 10, 10));
+		mainPanel.setLayout(new GridLayout(0, 2, 10, 10));
 		mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10) );
 
 		
-		Font bItalic = new Font("Arial", Font.ITALIC, 30);
+		//Font bItalic = new Font("Arial", Font.ITALIC, 30);
 		
 		JButton searchButton = new JButton("Search");
-		searchButton.setFont(bItalic);
+		//searchButton.setFont(bItalic);
 		
 		JButton viewAccountButton = new JButton("View Account");
-		viewAccountButton.setFont(bItalic);
+		//viewAccountButton.setFont(bItalic);
 		
-		JButton holdRequestButton = new JButton("Hold Request");
-		holdRequestButton.setFont(bItalic);
+		JButton holdRequestButton = new JButton("Make Hold Request");
+		//holdRequestButton.setFont(bItalic);
 		
 		JButton payFineButton = new JButton("Pay Fine");
-		payFineButton.setFont(bItalic);
+		//payFineButton.setFont(bItalic);
 		
 		
 		

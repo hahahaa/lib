@@ -111,8 +111,8 @@ public class Borrower {
 		}
 	}
 	// TODO Check account
-	public void checkAccount(String bid, String password) throws IOException {
-		if (validateAccount(bid, password) != false) return;
+	public void checkAccount(int bid, String password) throws IOException {
+		if (accountValidated(bid, password) != false) return;
 	}
 
 	public void checkFine(int bid) {
@@ -185,8 +185,6 @@ public class Borrower {
 		// outstanding fees;
 		int hid;
 		Date issuedDate;
-
-		String callNumber;
 		String title;
 		String isbn;
 		String mainAuthor;
@@ -194,17 +192,15 @@ public class Borrower {
 		try
 		{
 			PreparedStatement prepared = con.prepareStatement(
-					"SELECT HoldRequest.hid, HoldRequest.issuedDate, Book.callNumber, Book.title, Book.isbn, Book.mainAuthor " +
-							"FROM HoldRequest, Book " +
-					"WHERE HoldRequest.callNumber = Book.callNumber AND HoldRequest.bid = ?");
+					"SELECT hid, issuedDate, title, isbn, mainAuthor " +
+					"FROM HoldRequest, Book WHERE " +
+					"HoldRequest.callNumber = Book.callNumber AND bid = ?");
 			prepared.setInt(1, bid);
 
 			ResultSet result = prepared.executeQuery();
 			while(result.next()) {
 				hid = result.getInt("hid");
 				issuedDate = result.getDate("issuedDate");
-
-				callNumber = result.getString("callNumber");
 				title = result.getString("title");
 				isbn = result.getString("isbn");
 				mainAuthor = result.getString("mainAuthor");
@@ -217,14 +213,16 @@ public class Borrower {
 		}
 	}
 
-	private boolean validateAccount(String bid, String password){
+	private boolean accountValidated(int bid, String password){
 
 		PreparedStatement prepared;
 		ResultSet result;
 
 		try
 		{
-			prepared = con.prepareStatement("SELECT password FROM borrower WHERE bid=" + bid);
+			prepared = con.prepareStatement("SELECT password FROM borrower WHERE bid=? and password =?");
+			prepared.setInt(1, bid);
+			prepared.setString(2, password);
 			result = prepared.executeQuery();
 
 			if (result.next()){
@@ -253,28 +251,31 @@ public class Borrower {
 	// TODO Place a hold
 	public void placeHoldRequest(int bid, String password, String callNumber){
 
+		if (!accountValidated(bid, password)){
+			return;
+		}
+		
 		PreparedStatement prepared;
 		ResultSet result;
 
 		// Check to see if borrower is already holding the item.
 		try {
 			prepared = con.prepareStatement(
-					"SELECT COUNT(*) " +
-							"FROM HoldRequest " +
+					"SELECT * FROM HoldRequest " +
 					"WHERE bid = ? AND callNumber = ?");
 			prepared.setInt(1, bid);
 			prepared.setString(2, callNumber);
 
 			result = prepared.executeQuery();
 			if (result.next()) {
-				if(result.getInt(1) >= 1) {
-					JOptionPane.showMessageDialog(null,
-							"You already have a hold request on this item.",
-							"Error",
-							JOptionPane.ERROR_MESSAGE);
-					prepared.close();
-					return;
-				}
+
+				JOptionPane.showMessageDialog(null,
+						"You already have a hold request on this item.",
+						"Error",
+						JOptionPane.ERROR_MESSAGE);
+				prepared.close();
+				return;
+
 			}
 
 			prepared.close();
@@ -282,24 +283,23 @@ public class Borrower {
 			printErrorMessage(e);
 		}
 
-		// Check to see if all copies of item is out
+		// Check to see if any copy of item is in
 		try {
 			prepared = con.prepareStatement(
-					"SELECT COUNT(*) " +
-							"FROM BookCopy " +
-					"WHERE status <> 'out' AND callNumber = ?");
+					"SELECT * FROM BookCopy " +
+					"WHERE status = 'in' AND callNumber = ?");
 			prepared.setString(1, callNumber);
 
 			result = prepared.executeQuery();
 			if (result.next()) {
-				if(result.getInt(1) >= 1) {
-					JOptionPane.showMessageDialog(null,
-							"One or more copies of the item is still checked in.",
-							"Error",
-							JOptionPane.ERROR_MESSAGE);
-					prepared.close();
-					return;
-				}
+
+				JOptionPane.showMessageDialog(null,
+						"One or more copies of the item is still checked in.",
+						"Error",
+						JOptionPane.ERROR_MESSAGE);
+				prepared.close();
+				return;
+
 			}
 
 			prepared.close();
@@ -344,6 +344,7 @@ public class Borrower {
 	// TODO Pay a fine
 	public void payFine(int bid, String password, int fid) {
 
+		if (!accountValidated(bid, password)) return;
 
 		PreparedStatement  prepared;
 		ResultSet  result;
@@ -354,7 +355,7 @@ public class Borrower {
 		// Check to see if fine is attached to borrower.
 		try {
 			prepared = con.prepareStatement(
-					"SELECT Fine.amount, Fine.issuedDate " +
+					"SELECT amount, issuedDate " +
 							"FROM Borrowing, Fine " +
 							"WHERE Borrowing.borid = Fine.borid AND Fine.paidDate IS NULL AND Borrowing.bid = " + bid + " AND Fine.fid = " + fid);
 
@@ -369,7 +370,7 @@ public class Borrower {
 			}
 
 			amount = result.getInt("amount");
-			issuedDate = result.getDate("issuedDate");
+			//issuedDate = result.getDate("issuedDate");
 
 			prepared.close();
 		} catch (SQLException ex) {
