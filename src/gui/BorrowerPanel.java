@@ -3,18 +3,25 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -31,12 +38,15 @@ import main.Librarian;
 
 public class BorrowerPanel {
 	
+	private JFrame mainFrame;
 	private JTextField searchField;
 	private JPanel mainPanel;
 	private Connection con;
+	private Borrower borrower;
 	
 	public BorrowerPanel(Connection con){
 		this.con = con;
+		borrower = new Borrower(con);
 	}
 	
 	private void openSearchForm(){
@@ -271,7 +281,7 @@ public class BorrowerPanel {
 				int bid = Integer.parseInt( bidField.getText() );
 				String callNumber = callNumberField.getText();
 				String password = passwordField.getText();
-				Borrower.placeHoldRequest( bid, password, callNumber );
+				borrower.placeHoldRequest( bid, password, callNumber );
 			}
 		});
 
@@ -291,43 +301,35 @@ public class BorrowerPanel {
 				addBookForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
 
 				// Field Labels
-				JLabel callNumberLabel = new JLabel("Call Number: ");
-				JLabel isbnLabel = new JLabel("ISBN: ");
-				JLabel titleLabel = new JLabel("Title: ");
-				JLabel mainAuthorLabel = new JLabel("Main Author: ");
-				JLabel publisherLabel = new JLabel("Publisher: ");
-				JLabel yearLabel = new JLabel("Year: ");
+				JLabel bidLabel = new JLabel("Borrower ID: ");
+				JLabel passwordLabel = new JLabel("Password: ");
 
 				// Fields
-				JTextField callNumberField = new JTextField(20);
-				JTextField isbnField = new JTextField(20);
-				JTextField titleField = new JTextField(20);
-				JTextField mainAuthorField = new JTextField(20);
-				JTextField publisherField = new JTextField(20);
-				JTextField yearField = new JTextField(10);
+				JTextField bidField = new JTextField(20);
+				JTextField passwordField = new JTextField(20);
 
 				// Buttons
 				JButton addButton = new JButton("Add");
 				JButton cancelButton = new JButton("Cancel");
 
 				// Add components to panel
-				addBookForm.add(callNumberLabel);
-				addBookForm.add(callNumberField);
-				addBookForm.add(isbnLabel);
-				addBookForm.add(isbnField);
-				addBookForm.add(titleLabel);
-				addBookForm.add(titleField);
-				addBookForm.add(mainAuthorLabel);
+				addBookForm.add(bidLabel);
+				addBookForm.add(bidField);
+				//addBookForm.add(isbnLabel);
+				addBookForm.add(passwordField);
+				//addBookForm.add(titleLabel);
+				/*addBookForm.add(titleField);
+				//addBookForm.add(mainAuthorLabel);
 				addBookForm.add(mainAuthorField);
-				addBookForm.add(publisherLabel);
+				//addBookForm.add(publisherLabel);
 				addBookForm.add(publisherField);
-				addBookForm.add(yearLabel);
+				addBookForm.add(passwordLabel);
 				addBookForm.add(yearField);
 				addBookForm.add(addButton);
-				addBookForm.add(cancelButton);
+				addBookForm.add(cancelButton);*/
 
 				// Window
-				final JFrame frame = new JFrame("Add Book");
+				final JFrame frame = new JFrame("Log In");
 				// Window Properties
 				frame.pack();
 				frame.setVisible(true);
@@ -341,6 +343,7 @@ public class BorrowerPanel {
 				Dimension d = frame.getToolkit().getScreenSize();
 				Rectangle r = frame.getBounds();
 				frame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
+				frame.dispose();
 
 	}
 
@@ -506,7 +509,7 @@ public class BorrowerPanel {
 				String password = passwordField.getText();
 				int fid = Integer.parseInt( fidField.getText() );
 				//int amount = Integer.parseInt( amountField.getText() );
-				Borrower.payFine( bid, password, fid );
+				borrower.payFine( bid, password, fid );
 			}
 		});
 
@@ -518,11 +521,7 @@ public class BorrowerPanel {
 		});
 	}
 
-	
-	/////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////// //just adding open pay form()
+
 	public JComponent getBorrowerPanel(){
 		
 		mainPanel = new JPanel();
@@ -530,26 +529,20 @@ public class BorrowerPanel {
 		mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10) );
 
 		
-		//Font bItalic = new Font("Arial", Font.ITALIC, 30);
+		JButton searchButton = new JButton("Search Book");
 		
-		JButton searchButton = new JButton("Search");
-		//searchButton.setFont(bItalic);
+		JButton logInButton = new JButton("Log In");
 		
-		JButton viewAccountButton = new JButton("View Account");
-		//viewAccountButton.setFont(bItalic);
+		//JButton holdRequestButton = new JButton("Make Hold Request");
 		
-		JButton holdRequestButton = new JButton("Make Hold Request");
-		//holdRequestButton.setFont(bItalic);
-		
-		JButton payFineButton = new JButton("Pay Fine");
-		//payFineButton.setFont(bItalic);
+		//JButton payFineButton = new JButton("Pay Fine");
 		
 		
 		
-		mainPanel.add(viewAccountButton);
-		mainPanel.add(holdRequestButton);
+		mainPanel.add(logInButton);
+		//mainPanel.add(holdRequestButton);
 		mainPanel.add(searchButton);
-		mainPanel.add(payFineButton);
+		//mainPanel.add(payFineButton);
 		
 
 		
@@ -559,13 +552,14 @@ public class BorrowerPanel {
 				openSearchForm();
 			}
 		});
-		viewAccountButton.addActionListener(new ActionListener(){
+		logInButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{
-				openAccountForm();
+				//openAccountForm();
+				openLogInForm();
 			}
 		});
-		holdRequestButton.addActionListener(new ActionListener(){
+		/*holdRequestButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{
 				openHoldForm();
@@ -576,9 +570,127 @@ public class BorrowerPanel {
 			{
 				openPayFineForm();
 			}
-		});
+		});*/
 		
 		return mainPanel;
+		
+	}
+	
+	private void openLogInForm(){
+		
+		/*
+		 * constructs login window and loads JDBC driver
+		 */ 
+		mainFrame = new JFrame("User Login");
+
+		JLabel usernameLabel = new JLabel("Enter username: ");
+		JLabel passwordLabel = new JLabel("Enter password: ");
+
+		final JTextField usernameField = new JTextField(10);
+		final JPasswordField passwordField = new JPasswordField(10);
+		passwordField.setEchoChar('*');
+
+		JButton loginButton = new JButton("Log In");
+
+		JPanel contentPane = new JPanel();
+		mainFrame.setContentPane(contentPane);
+
+		// layout components using the GridBag layout manager
+
+		GridBagLayout gb = new GridBagLayout();
+		GridBagConstraints c = new GridBagConstraints();
+
+		contentPane.setLayout(gb);
+		contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+		// place the username label 
+		c.gridwidth = GridBagConstraints.RELATIVE;
+		c.insets = new Insets(10, 10, 5, 0);
+		gb.setConstraints(usernameLabel, c);
+		contentPane.add(usernameLabel);
+
+		// place the text field for the username 
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(10, 0, 5, 10);
+		gb.setConstraints(usernameField, c);
+		contentPane.add(usernameField);
+
+		// place password label
+		c.gridwidth = GridBagConstraints.RELATIVE;
+		c.insets = new Insets(0, 10, 10, 0);
+		gb.setConstraints(passwordLabel, c);
+		contentPane.add(passwordLabel);
+
+		// place the password field 
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(0, 0, 10, 10);
+		gb.setConstraints(passwordField, c);
+		contentPane.add(passwordField);
+
+		// place the login button
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(5, 10, 10, 10);
+		c.anchor = GridBagConstraints.CENTER;
+		gb.setConstraints(loginButton, c);
+		contentPane.add(loginButton);
+
+		loginButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String username = usernameField.getText();
+				String password = String.valueOf(passwordField.getPassword());
+				
+				try{
+					int bid = Integer.parseInt(username);
+					if(borrower.accountValidated(bid, password)){
+						mainFrame.dispose();
+						openNewWindow();
+					}else{
+						JOptionPane.showMessageDialog(null,
+								"Invalid username/password combination",
+								"Error",
+								JOptionPane.ERROR_MESSAGE);
+					}
+					
+				} catch (Exception e1){
+					JOptionPane.showMessageDialog(null,
+							"Invalid username " + e1.getMessage(),
+							"Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+				//System.out.println(password);
+				//borrower.accountValidated(bid, password)
+				//mainFrame.dispose();
+			}
+			
+			
+		});
+
+		// anonymous inner class for closing the window
+		mainFrame.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent e){ 
+				System.exit(0); 
+			}
+		});
+
+		// size the window to obtain a best fit for the components
+		mainFrame.pack();
+
+		// center the frame
+		Dimension d = mainFrame.getToolkit().getScreenSize();
+		Rectangle r = mainFrame.getBounds();
+		mainFrame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
+
+		// make the window visible
+		mainFrame.setVisible(true);
+
+		// place the cursor in the text field for the username
+		usernameField.requestFocus();
+		
+	}
+	
+	private void openNewWindow(){
 		
 	}
 }

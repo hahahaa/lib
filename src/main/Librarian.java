@@ -29,7 +29,7 @@ public class Librarian {
 		PreparedStatement  ps;
 		try {
 			if(!hasBook(callNumber)) {
-				ps = con.prepareStatement("INSERT INTO Book VALUES (branch_counter.nextval,?,?,?,?,?,?)");
+				ps = con.prepareStatement("INSERT INTO Book VALUES (?,?,?,?,?,?)");
 				
 				ps.setString(1, callNumber);
 				ps.setInt(2, isbn);
@@ -40,7 +40,7 @@ public class Librarian {
 				
 				ps.executeUpdate();
 				con.commit();
-				ps.close();	
+				ps.close();
 			}
 			
 			addOneBookCopy(callNumber);
@@ -54,7 +54,10 @@ public class Librarian {
 				con.rollback();	
 			}
 			catch (SQLException ex2) {
-				System.out.println("Message: " + ex2.getMessage());
+				JOptionPane.showMessageDialog(null,
+						"Message: " + ex2.getMessage(),
+						"Error",
+						JOptionPane.ERROR_MESSAGE);	
 				System.exit(-1);
 			}
 		}
