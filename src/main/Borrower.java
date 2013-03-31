@@ -129,7 +129,7 @@ public class Borrower {
 		try
 		{
 			PreparedStatement prepared = con.prepareStatement(
-					"SELECT Borrowing.callNumber, Borrowing.copyNo, Fine.fid, Fine.amount, Fine.issuedDate " +
+					"SELECT distinct Borrowing.callNumber, Borrowing.copyNo, Fine.fid, Fine.amount, Fine.issuedDate " +
 							"FROM Borrowing, Fine " +
 					"WHERE Borrowing.borid = Fine.borid AND Fine.paidDate IS NULL AND Borrowing.bid = ?");
 			prepared.setInt(1, bid);
