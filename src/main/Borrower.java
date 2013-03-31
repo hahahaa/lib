@@ -129,8 +129,8 @@ public class Borrower {
 		try
 		{
 			PreparedStatement prepared = con.prepareStatement(
-					"SELECT distinct Borrowing.callNumber, Borrowing.copyNo, Fine.fid, Fine.amount, Fine.issuedDate " +
-							"FROM Borrowing, Fine " +
+					"SELECT distinct fid, amount, issuedDate, callNumber, copyNo, outDate " +
+					"FROM Borrowing, Fine " +
 					"WHERE Borrowing.borid = Fine.borid AND Fine.paidDate IS NULL AND Borrowing.bid = ?");
 			prepared.setInt(1, bid);
 
@@ -154,23 +154,23 @@ public class Borrower {
 
 	private void checkBorrowedBook(String bid){
 
-		String callNumber;
-		String copyNumber;
+		String mainAuthor;
+		String publisher;
 		Date outDate;
 		String title;
 
 
 		try {
 			PreparedStatement prepared = con.prepareStatement(
-					"SELECT callNumber, copyNo, outDate, title " +
-							"FROM Borrowing, Book " +
-					"WHERE Borrowing.callNumber = Book.callNumber AND Borrowing.bid = ?");
+					"SELECT distinct title, mainauthor, publisher, outDate " +
+					"FROM Borrowing, Book WHERE bid = ? and " +
+					"book.callnumber = borrowing.callnumber and indate is null;");
 			prepared.setString(1, bid);
 
 			ResultSet result = prepared.executeQuery();
 			while(result.next()) {
-				callNumber = result.getString("callNumber");
-				copyNumber = result.getString("copyNo");
+				mainAuthor = result.getString("mainAuthor");
+				publisher = result.getString("publisher");
 				outDate = result.getDate("outDate");
 				title = result.getString("title");
 			}
