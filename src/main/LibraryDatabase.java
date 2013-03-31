@@ -50,8 +50,7 @@ public class LibraryDatabase implements ActionListener
 
 		JPanel contentPane = new JPanel();
 		mainFrame.setContentPane(contentPane);
-
-
+		
 		// layout components using the GridBag layout manager
 
 		GridBagLayout gb = new GridBagLayout();
@@ -169,13 +168,12 @@ public class LibraryDatabase implements ActionListener
 	 */ 
 	public void actionPerformed(ActionEvent e) 
 	{
-		if ( connect(usernameField.getText(), String.valueOf(passwordField.getPassword())) )
+		if (connect(usernameField.getText(), String.valueOf(passwordField.getPassword())))
 		{
 			// if the username and password are valid, 
 			// remove the login window and display a text menu 
 			mainFrame.dispose();
-			menu = new Menu();
-			menu.createMenu(con);
+			menu = new Menu(con);
 		}
 		else
 		{
