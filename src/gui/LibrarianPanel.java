@@ -2,11 +2,11 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -21,10 +21,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-import java.sql.Connection;
-
-import main.Librarian;
-
 public class LibrarianPanel {
 
 	private JTextField callNumberField;
@@ -35,13 +31,13 @@ public class LibrarianPanel {
 	private JTextField yearField;
 	private JPanel mainPanel;
 	
+	private Connection con;
+	
 	public static JTable viewPopTable;
 	public static DefaultTableModel popModel;
 	
 	public static JTable viewOutTable;
 	public static DefaultTableModel outModel;
-	
-	private Connection con;
 
 	public LibrarianPanel(Connection con) {
 		this.con = con;
@@ -69,17 +65,10 @@ public class LibrarianPanel {
 		publisherField = new JTextField(20);
 		yearField = new JTextField(10);
 
-		Font bItalic = new Font("Arial", Font.ITALIC, 15);
-//		loginButton.setFont(bItalic);
-		
 		// Buttons
 		JButton addButton = new JButton("Add");
 		JButton cancelButton = new JButton("Cancel");
 
-		callNumberLabel.setFont(bItalic);mainAuthorLabel.setFont(bItalic);addButton.setFont(bItalic);
-		isbnLabel.setFont(bItalic);publisherLabel.setFont(bItalic);cancelButton.setFont(bItalic);
-		titleLabel.setFont(bItalic);yearLabel.setFont(bItalic);
-		
 		// Add components to panel
 		addBookForm.add(callNumberLabel);
 		addBookForm.add(callNumberField);
@@ -93,22 +82,24 @@ public class LibrarianPanel {
 		addBookForm.add(publisherField);
 		addBookForm.add(yearLabel);
 		addBookForm.add(yearField);
-		addBookForm.add(cancelButton);
 		addBookForm.add(addButton);
+		addBookForm.add(cancelButton);
+
 		// Window
 		final JFrame frame = new JFrame("Add Book");
 		// Window Properties
 		frame.pack();
 		frame.setVisible(true);
-
+		frame.setResizable(false);
+		frame.setSize(300, 300);
 
 		//Add content to the window.
 		frame.add(addBookForm, BorderLayout.CENTER);
 
-		frame.setVisible(true);
-		frame.setResizable(true);
-		frame.setSize(640/2,320);
-		frame.setLocation( 180, 100 );
+		// center the frame
+		Dimension d = frame.getToolkit().getScreenSize();
+		Rectangle r = frame.getBounds();
+		frame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
 
 		// Button Listeners
 		addButton.addActionListener(new ActionListener(){
@@ -176,7 +167,7 @@ public class LibrarianPanel {
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				};
-				Librarian.addNewBook(callNumber, isbn, title, mainAuthor, publisher, year);
+//				Librarian.addNewBook(callNumber, isbn, title, mainAuthor, publisher, year);
 				frame.setVisible(false);
 			}
 		});
@@ -217,25 +208,15 @@ public class LibrarianPanel {
 		subjectsPanel.add(subjectsField, BorderLayout.CENTER);
 		subjectsPanel.add(searchButton, BorderLayout.LINE_END);
 		
-		Font bItalic = new Font("Arial", Font.ITALIC, 15);
-//		loginButton.setFont(bItalic);
-		
-		
 		// Buttons
 		JButton sendSeleButton = new JButton("Send to selected");
 		JButton sendAllButton = new JButton("Send to All");
-		sendSeleButton.setFont(bItalic);
-		sendAllButton.setFont(bItalic);
-		
-		subjectsLabel.setFont(bItalic);
-		searchButton.setFont(bItalic);
-		
-		
-		
+		JButton closeButton = new JButton("Close");
 		// Button panel
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.add(sendSeleButton, BorderLayout.LINE_START);
 		buttonPanel.add(sendAllButton, BorderLayout.CENTER);
+		buttonPanel.add(closeButton, BorderLayout.LINE_END);
 		
 
 		// Add components to panel
@@ -249,27 +230,30 @@ public class LibrarianPanel {
 		// Window Properties
 		frame.pack();
 		frame.setVisible(true);
-
-
+		frame.setResizable(false);
+		frame.setSize(500, 310);
 		//Add content to the window.
 		frame.add(viewOutForm, BorderLayout.CENTER);
-
-
-		frame.setVisible(true);
-		frame.setResizable(true);
-		frame.setSize(500,360);
-		frame.setLocation( 140, 50 );
+		// center the frame
+		Dimension d = frame.getToolkit().getScreenSize();
+		Rectangle r = frame.getBounds();
+		frame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
 
 		// Button Listeners
 		searchButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{			
 				String subjects = subjectsField.getText();
-				Librarian.checkedOutItems(subjects);
+//				Librarian.checkedOutItems(subjects);
 			}
 		});
 
-
+		closeButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e)
+			{
+				frame.setVisible(false);
+			}
+		});
 	}
 	
 	private void openViewPopForm(){
@@ -293,13 +277,6 @@ public class LibrarianPanel {
 		final JTextField yearField = new JTextField(10);
 		JPanel topPanel = new JPanel();
 		
-		Font bItalic = new Font("Arial", Font.ITALIC, 15);
-//		loginButton.setFont(bItalic);
-		
-		topLabel.setFont(bItalic);
-		yearLabel.setFont(bItalic);
-		
-		
 		topPanel.add(topLabel);
 		topPanel.add(topField);
 		topPanel.add(yearLabel);
@@ -307,11 +284,12 @@ public class LibrarianPanel {
 		
 		// Buttons
 		JButton showButton = new JButton("Show");
-		showButton.setFont(bItalic);
-		
+		JButton closeButton = new JButton("Close");
 		// Button panel
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.add(showButton, BorderLayout.LINE_START);		
+		buttonPanel.add(showButton, BorderLayout.LINE_START);
+		buttonPanel.add(closeButton, BorderLayout.LINE_END);
+		
 
 		// Add components to panel
 		scrollPane.setPreferredSize(new Dimension(480, 200));
@@ -324,15 +302,14 @@ public class LibrarianPanel {
 		// Window Properties
 		frame.pack();
 		frame.setVisible(true);
-
+		frame.setResizable(false);
+		frame.setSize(500, 275);
 		//Add content to the window.
 		frame.add(viewPopForm, BorderLayout.CENTER);
-
-		frame.setVisible(true);
-		frame.setResizable(true);
-		frame.setSize(500,360);
-		frame.setLocation( 140, 50 );
-
+		// center the frame
+		Dimension d = frame.getToolkit().getScreenSize();
+		Rectangle r = frame.getBounds();
+		frame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
 
 		// Button Listeners
 		showButton.addActionListener(new ActionListener(){
@@ -362,30 +339,27 @@ public class LibrarianPanel {
 					return;
 				};
 				
-				Librarian.popularItems(top, year);
+//				Librarian.popularItems(top, year);
 			}
 		});
 
-
+		closeButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e)
+			{
+				frame.setVisible(false);
+			}
+		});
 	}
 	
 	public JComponent getLibrarianPanel(){
 
 		mainPanel = new JPanel();
-		mainPanel.setLayout(new GridLayout(0, 1, 10, 10));
+		mainPanel.setLayout(new GridLayout(0, 2, 10, 10));
 		mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10) );
 
-		Font bItalic = new Font("Arial", Font.ITALIC, 30);
-		
 		JButton addBookButton = new JButton("Add Book");
-		addBookButton.setFont(bItalic);
-		
 		JButton viewOutButton = new JButton("View Out Items");
-		viewOutButton.setFont(bItalic);
-		
 		JButton viewPopularButton = new JButton("View Popular Items");
-		viewPopularButton.setFont(bItalic);
-		
 
 		addBookButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
