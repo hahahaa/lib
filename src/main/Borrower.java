@@ -344,6 +344,7 @@ public class Borrower {
 	// TODO Pay a fine
 	public void payFine(int bid, String password, int fid) {
 
+		if (!accountValidated(bid, password)) return;
 
 		PreparedStatement  prepared;
 		ResultSet  result;
@@ -354,7 +355,7 @@ public class Borrower {
 		// Check to see if fine is attached to borrower.
 		try {
 			prepared = con.prepareStatement(
-					"SELECT Fine.amount, Fine.issuedDate " +
+					"SELECT amount, issuedDate " +
 							"FROM Borrowing, Fine " +
 							"WHERE Borrowing.borid = Fine.borid AND Fine.paidDate IS NULL AND Borrowing.bid = " + bid + " AND Fine.fid = " + fid);
 
@@ -369,7 +370,7 @@ public class Borrower {
 			}
 
 			amount = result.getInt("amount");
-			issuedDate = result.getDate("issuedDate");
+			//issuedDate = result.getDate("issuedDate");
 
 			prepared.close();
 		} catch (SQLException ex) {
