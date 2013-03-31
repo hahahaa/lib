@@ -309,7 +309,7 @@ public class ClerkPanel {
 				};
 				
 				String callNumber = callNumberField.getText();
-				ArrayList<String> callNumbers;
+				ArrayList<String> callNumbers = new ArrayList<String>();
 				if (callNumber.equals("")) {
 					JOptionPane.showMessageDialog(null,
 							"Please fill in call numbers.",

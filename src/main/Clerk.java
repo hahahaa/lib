@@ -385,7 +385,7 @@ public class Clerk {
 	 * @return returns the 'type' if found,	returns null otherwise
 	 * 	
 	 */
-	private String getBorrowerType(int bid) throws SQLException{
+	private static String getBorrowerType(int bid) throws SQLException{
 
 		PreparedStatement  prepStatement;
 		ResultSet  result;
@@ -422,7 +422,7 @@ public class Clerk {
 	 * @param borrowerType
 	 * @return +14 if Student, +84 if Faculty, +42 if Staff,  0 otherwise
 	 */
-	private Date getReturnDate(String borrowerType) {
+	private static Date getReturnDate(String borrowerType) {
 		Calendar cal = java.util.Calendar.getInstance(); 
 		Date currDate = new Date(cal.getTimeInMillis());	
 		int borrowDuration;
