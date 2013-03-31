@@ -80,7 +80,7 @@ public class Clerk {
 
 	}
 
-	public void checkoutItems(int bid, ArrayList<String> callNumbers){
+	public static void checkoutItems(int bid, ArrayList<String> callNumbers){
 		if (hasExpired(bid))
 			return;
 		for (int i = 0; i < callNumbers.size(); i++){
@@ -95,7 +95,7 @@ public class Clerk {
 	 * @param callNumber
 	 * @param copyNo
 	 */
-	public void processReturn(String callNumber, String copyNo){
+	public static void processReturn(String callNumber, int copyNo){
 		PreparedStatement prepStatement;
 		ResultSet result;
 		String sqlQuery;
@@ -117,7 +117,7 @@ public class Clerk {
 					   "ORDER BY outDate DESC";
 			prepStatement = con.prepareStatement(sqlQuery);
 			prepStatement.setString(1, callNumber);
-			prepStatement.setString(2, copyNo);
+			prepStatement.setInt(2, copyNo);
 			result = prepStatement.executeQuery();
 			
 			if (result.next()){ 
@@ -162,7 +162,7 @@ public class Clerk {
 				sqlQuery = "UPDATE BookCopy SET status='on hold' WHERE BookCopy.callNumber = ? AND BookCopy.copyNo = ?";
 				prepStatement = con.prepareStatement(sqlQuery);
 				prepStatement.setString(1, callNumber);
-				prepStatement.setString(2, copyNo);
+				prepStatement.setInt(2, copyNo);
 				prepStatement.executeUpdate();
 				con.commit();
 				prepStatement.close();
@@ -207,7 +207,7 @@ public class Clerk {
 		ArrayList<String> names = new ArrayList<String>();
 		ArrayList<String> titles = new ArrayList<String>();
 		ArrayList<String> callNumbers = new ArrayList<String>();
-		ArrayList<String> copyNos = new ArrayList<String>();
+		ArrayList<Integer> copyNos = new ArrayList<Integer>();
 		ArrayList<Date> inDates = new ArrayList<Date>();
 		ArrayList<String> emails = new ArrayList<String>();
 		
@@ -228,7 +228,7 @@ public class Clerk {
 				names.set(index, result.getString("name"));
 				titles.set(index, result.getString("title"));
 				callNumbers.set(index, result.getString("callNumber"));
-				copyNos.set(index, result.getString("copyNo"));
+				copyNos.set(index, result.getInt("copyNo"));
 				inDates.set(index, result.getDate("inDate"));
 				emails.set(index, result.getString("emailAddress"));
 				index++;
@@ -244,7 +244,6 @@ public class Clerk {
 		} catch ( SQLException e ){
 			displayExceptionError(e);
 		}
-		//return list;
 		return list;
 	}
 	/**
@@ -253,7 +252,7 @@ public class Clerk {
 	 * @param bid
 	 * @return true if borrower is expired, false otherwise
 	 */
-	private boolean hasExpired(int bid){
+	private static boolean hasExpired(int bid){
 		PreparedStatement prepStatement;
 		ResultSet result;
 		boolean hasExpired = true;
@@ -290,11 +289,11 @@ public class Clerk {
 	 * @param bid
 	 * @param callNumber
 	 */
-	private void checkout(int bid, String callNumber){
+	private static void checkout(int bid, String callNumber){
 		PreparedStatement prepStatement;
 		PreparedStatement prepStatement2;
 		ResultSet result;
-		String copyNo;
+		int copyNo;
 		String sqlQuery;
 
 		try {	
@@ -312,7 +311,7 @@ public class Clerk {
 						JOptionPane.INFORMATION_MESSAGE);
 				return;
 			} else {
-				copyNo = result.getString("copyNo");
+				copyNo = result.getInt("copyNo");
 			}
 			prepStatement.close();
 			result.close();
@@ -325,7 +324,7 @@ public class Clerk {
 			prepStatement = con.prepareStatement(sqlQuery);
 			prepStatement.setInt(1, bid);
 			prepStatement.setString(2, callNumber);
-			prepStatement.setString(3, copyNo);
+			prepStatement.setInt(3, copyNo);
 			prepStatement.setDate(4, returnDate);
 			prepStatement.executeUpdate();
 			
@@ -333,7 +332,7 @@ public class Clerk {
 			sqlQuery = "UPDATE BookCopy SET status='out' WHERE BookCopy.callNumber = ? AND BookCopy.copyNo = ?";
 			prepStatement2 = con.prepareStatement(sqlQuery);
 			prepStatement2.setString(1, callNumber);
-			prepStatement2.setString(2, copyNo);
+			prepStatement2.setInt(2, copyNo);
 			prepStatement2.executeUpdate();
 			con.commit();	
 			prepStatement.close();
@@ -368,7 +367,7 @@ public class Clerk {
 	 * @param e 
 	 * 		exception thrown
 	 */
-	private void displayExceptionError(Exception e){
+	private static void displayExceptionError(Exception e){
 		JOptionPane.showMessageDialog(null,
 				e.getMessage(),
 				"Error",
@@ -455,7 +454,7 @@ public class Clerk {
 	 * @param callNumber
 	 * @return true if the book is on hold, false otherwise
 	 */
-	private int isOnHold(String callNumber) throws SQLException{
+	private static int isOnHold(String callNumber) throws SQLException{
 		int bid = -1;
 		PreparedStatement prepStatement;
 		ResultSet result;

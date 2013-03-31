@@ -309,6 +309,7 @@ public class ClerkPanel {
 				};
 				
 				String callNumber = callNumberField.getText();
+				ArrayList<String> callNumbers;
 				if (callNumber.equals("")) {
 					JOptionPane.showMessageDialog(null,
 							"Please fill in call numbers.",
@@ -316,7 +317,7 @@ public class ClerkPanel {
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				Clerk.checkoutItems(bid, callNumber);
+				Clerk.checkoutItems(bid, callNumbers);
 			}
 		});
 
