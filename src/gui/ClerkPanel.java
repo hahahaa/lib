@@ -215,7 +215,7 @@ public class ClerkPanel {
 		checkoutForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
 		
 		JLabel bidLabel = new JLabel("Bid:");
-		JLabel callNumberLabel = new JLabel("Call Numbers(separated by ;):");
+		JLabel callNumberLabel = new JLabel("Call Numbers(separated by ; ):");
 		
 		final JTextField bidField = new JTextField(); 
 		final JTextField callNumberField = new JTextField();
@@ -237,7 +237,7 @@ public class ClerkPanel {
 		frame.add(checkoutForm, BorderLayout.CENTER);
 
 		frame.setVisible(true);
-		frame.setResizable(true);
+		frame.setResizable(false);
 		frame.setSize(550,180);
 		frame.setLocation(100, 140);
 
@@ -281,7 +281,6 @@ public class ClerkPanel {
 		returnForm.setLayout(new GridLayout(0, 2, 10, 10));
 		returnForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
 
-		
 		JLabel callNumberLabel = new JLabel("Call Number: ");
 		JLabel copyNoLabel = new JLabel("Copy Number: ");
 		final JTextField callNumberField = new JTextField();
@@ -290,7 +289,6 @@ public class ClerkPanel {
 		JButton returnButton = new JButton("Return");
 		JButton cancelButton = new JButton("Cancel");
 	
-		// Add components to panel
 		returnForm.add(callNumberLabel);
 		returnForm.add(callNumberField);
 		returnForm.add(copyNoLabel);
@@ -299,21 +297,17 @@ public class ClerkPanel {
 		returnForm.add(cancelButton);
 		returnForm.add(returnButton);
 
-		// Window
 		final JFrame frame = new JFrame("Return");
-		// Window Properties
 		frame.pack();
 		frame.setVisible(true);
 
-		//Add content to the window.
 		frame.add(returnForm, BorderLayout.CENTER);
 
 		frame.setVisible(true);
-		frame.setResizable(true);
+		frame.setResizable(false);
 		frame.setSize(320,180);
 		frame.setLocation( 100, 140 );
 
-		// Button Listeners
 		returnButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{				
@@ -363,14 +357,13 @@ public class ClerkPanel {
 
 		overdueForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
 
-		overdueForm.setLayout(new GridLayout(0, 1, 10, 10));
+		//overdueForm.setLayout(new GridLayout());
 		
 		final String[] columnNames = {"Call Number", "Copy #", "Title", "Bid", "Name", "Select"};
 		Object[][] data = {};
 
 		final DefaultTableModel model = new DefaultTableModel(data,columnNames);
 
-		// Add table to view items
 		JTable overdueTable = new JTable(model);
 		
 		TableColumn tc = overdueTable.getColumnModel().getColumn(5);  
@@ -387,32 +380,29 @@ public class ClerkPanel {
 				
 		JButton sendSeletedButton = new JButton("Send to selected");
 		JButton sendAllButton = new JButton("Send to All");
+		JButton cancelButton = new JButton("Cancel");
 		
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.add(sendSeletedButton);
 		buttonPanel.add(sendAllButton);
+		buttonPanel.add(cancelButton);
 		
 		JScrollPane scrollPane = new JScrollPane(overdueTable);
-		scrollPane.setPreferredSize(new Dimension(480, 200));
-		overdueForm.add(scrollPane, BorderLayout.CENTER);
+		scrollPane.setPreferredSize(new Dimension(600, 400));
+		overdueForm.add(scrollPane, BorderLayout.PAGE_START);
 		overdueForm.add(buttonPanel, BorderLayout.CENTER);	
 
-		// Window
 		final JFrame frame = new JFrame("Overdue Items");
-		// Window Properties
 		frame.pack();
 		frame.setVisible(true);
 
-		//Add content to the window.
 		frame.add(overdueForm, BorderLayout.CENTER);
 
 		frame.setVisible(true);
-		frame.setResizable(true);
-		frame.setSize(750,300);
-		frame.setLocation( 100, 140 );
+		frame.setResizable(false);
+		frame.setSize(620,500);
+		frame.setLocation(100, 140);
 		
-
-		// Button Listeners
 		sendSeletedButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{			
@@ -422,9 +412,7 @@ public class ClerkPanel {
 						bids.add((String) model.getValueAt(x, 3));
 					}
 				}
-				for(String bid : bids){
-					System.out.println(bid);
-				}
+
 			}
 		});
 		
@@ -435,9 +423,13 @@ public class ClerkPanel {
 				for(int x=0; x<model.getRowCount(); x++){
 						bids.add((String) model.getValueAt(x, 3));
 				}
-				for(String bid : bids){
-					System.out.println(bid);
-				}
+
+			}
+		});
+		cancelButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e)
+			{
+				frame.setVisible(false);
 			}
 		});
 	}
@@ -451,36 +443,28 @@ public class ClerkPanel {
 		
 		JButton addBorrowerButton = new JButton("Add Borrower");
 		JButton checkoutButton = new JButton("Checkout");
-		JButton processReturnButton = new JButton("Process Return");
-		JButton checkOverdueButton = new JButton("Check Overdue");
+		JButton processReturnButton = new JButton("Return");
+		JButton checkOverdueButton = new JButton("Check Overdue Items");
 
 		addBorrowerButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				//Execute when button is pressed
+			public void actionPerformed(ActionEvent e){
 				openAddBorrowerForm();
 			}
 		});  
 
 		checkoutButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				//Execute when button is pressed
+			public void actionPerformed(ActionEvent e){
 				openCheckoutForm();
 			}
 		});  
 
 		processReturnButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				//Execute when button is pressed
+			public void actionPerformed(ActionEvent e){
 				openReturnForm();
 			}
 		});
 		checkOverdueButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				//Execute when button is pressed
+			public void actionPerformed(ActionEvent e){
 				openOverdueForm();
 			}
 		});  

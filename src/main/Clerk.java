@@ -69,12 +69,12 @@ public class Clerk {
 
 	}
 
-	public void checkoutItem(int bid, String callNumber){
+	public void checkoutItem(int bid, String callNumbers){
 		if (hasExpired(bid))
 			return;
 		
-		String[] callNumbers = callNumber.split(";");
-		for(String number : callNumbers) {
+		String[] callNums = callNumbers.split(";");
+		for(String number : callNums) {
 			checkout(bid, number.trim());
 		}
 		return;
@@ -102,12 +102,12 @@ public class Clerk {
 		
 		try{
 			// find out the borrower of the book
-			sqlQuery = "SELECT borid, bid, inDate, status" +
-					    "FROM Borrowing, BookCopy" +  
-					    "WHERE Borrowing.callNumber=BookCopy.callNumber AND" +
-					    "Borrowing.copyNo = BookCopy.copyNo AND" +
-					    "Borrowing.callNumber = 1001 AND Borrowing.copyNo = 1 AND" +
-					    "BookCopy.status = 'out'"+
+			sqlQuery = "SELECT borid, bid, inDate, status " +
+					    "FROM Borrowing, BookCopy " +  
+					    "WHERE Borrowing.callNumber=BookCopy.callNumber AND " +
+					    "Borrowing.copyNo = BookCopy.copyNo AND " +
+					    "Borrowing.callNumber = ? AND Borrowing.copyNo = ? AND " +
+					    "BookCopy.status = 'out' "+
 					    "ORDER BY outDate DESC";
 
 			prepStatement = con.prepareStatement(sqlQuery);
@@ -122,7 +122,7 @@ public class Clerk {
 				dueDate = result.getDate("inDate");
 				prepStatement.close();
 				// delete the tuple from Borrowing table
-				sqlQuery = "DELETE FROM Borrowing"+
+				sqlQuery = "DELETE FROM Borrowing "+
 						   "WHERE borid = ?";
 				prepStatement = con.prepareStatement(sqlQuery);
 				prepStatement.setInt(1, borid);
@@ -163,8 +163,8 @@ public class Clerk {
 				prepStatement.close();
 				
 				// find borrower's email address
-				sqlQuery = "SELECT emailAddress" +
-							"FROM Borrower" +
+				sqlQuery = "SELECT emailAddress " +
+							"FROM Borrower " +
 							"WHERE bid = ? ";
 				prepStatement = con.prepareStatement(sqlQuery);
 				prepStatement.setInt(1, bidToNotify);
@@ -310,10 +310,10 @@ public class Clerk {
 			}
 			prepStatement.close();
 			result.close();
-
-
+			
 			// process borrowing
 			Date returnDate = getReturnDate(getBorrowerType(bid));
+
 			// insert int Borrowing table
 			sqlQuery = "INSERT INTO Borrowing VALUES (borid_counter.nextval, ?, ?, ?, SYSDATE, ?)"; 
 			prepStatement = con.prepareStatement(sqlQuery);
@@ -322,16 +322,22 @@ public class Clerk {
 			prepStatement.setInt(3, copyNo);
 			prepStatement.setDate(4, returnDate);
 			prepStatement.executeUpdate();
+
+			con.commit();
+			prepStatement.close();
 			
+
+
 			// update BookCopy table
 			sqlQuery = "UPDATE BookCopy SET status='out' WHERE BookCopy.callNumber = ? AND BookCopy.copyNo = ?";
-			prepStatement2 = con.prepareStatement(sqlQuery);
-			prepStatement2.setString(1, callNumber);
-			prepStatement2.setInt(2, copyNo);
-			prepStatement2.executeUpdate();
+			prepStatement = con.prepareStatement(sqlQuery);
+			prepStatement.setString(1, callNumber);
+			prepStatement.setInt(2, copyNo);
+			prepStatement.executeUpdate();
 			con.commit();	
 			prepStatement.close();
-			prepStatement2.close();
+			
+
 
 		} catch (SQLException e) {
 			displayExceptionError(e);
@@ -373,13 +379,13 @@ public class Clerk {
 
 		PreparedStatement  prepStatement;
 		ResultSet  result;
+		String ret;
 
 		String sqlQuery = "SELECT type " +
 						  "FROM Borrower " +
 						  "WHERE bid = ?";
 		prepStatement = con.prepareStatement(sqlQuery);
 		prepStatement.setInt(1, bid);
-
 		result = prepStatement.executeQuery();
 
 		if (!result.next()) {
@@ -390,11 +396,12 @@ public class Clerk {
 			prepStatement.close();
 			result.close();
 
-			return null;
+			return "";
 		} else {
+			ret = result.getString("type");
 			prepStatement.close();
 			result.close();
-			return result.getString("type");
+			return ret;
 		}
 
 	}
@@ -411,13 +418,13 @@ public class Clerk {
 		Date currDate = new Date(cal.getTimeInMillis());	
 		int borrowDuration;
 		
-		if (borrowerType.equals("Student")) {
+		if (borrowerType.compareToIgnoreCase("Student") == 0) {
 			borrowDuration = 14;
 		} 
-		else if (borrowerType.equals("Faculty")) {
+		else if (borrowerType.compareToIgnoreCase("Faculty") == 0) {
 			borrowDuration = 84;
 		} 
-		else if (borrowerType.equals("Staff")) {
+		else if (borrowerType.compareToIgnoreCase("Staff") == 0) {
 			borrowDuration = 42;
 		} 
 		else {
@@ -442,9 +449,9 @@ public class Clerk {
 		int bid = -1;
 		PreparedStatement prepStatement;
 		ResultSet result;
-		String sqlQuery = "SELECT bid" +
-				          "FROM HoldRequest" +
-				          "WHERE callNumber = ?" +
+		String sqlQuery = "SELECT bid " +
+				          "FROM HoldRequest " +
+				          "WHERE callNumber = ? " +
 				          "ORDER BY issuedDate ASC";
 		prepStatement = con.prepareStatement(sqlQuery);
 		prepStatement.setString(1, callNumber);
