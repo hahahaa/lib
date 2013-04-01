@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 
 public class Borrower {
 
@@ -152,32 +153,44 @@ public class Borrower {
 		}
 	}
 
-	private void checkBorrowedBook(String bid){
+	public ArrayList<String[]> getBorrowedBook(int bid){
 
 		String mainAuthor;
 		String publisher;
 		Date outDate;
+		Date inDate;
 		String title;
+		int borrowID;
+		
+		ArrayList<String[]> finalResult = new ArrayList<>();
+		
 
 
 		try {
 			PreparedStatement prepared = con.prepareStatement(
-					"SELECT distinct title, mainauthor, publisher, outDate " +
+					"SELECT distinct borid, title, mainauthor, publisher, outDate, inDate " +
 					"FROM Borrowing, Book WHERE bid = ? and " +
-					"book.callnumber = borrowing.callnumber and indate is null;");
-			prepared.setString(1, bid);
+					"book.callnumber = borrowing.callnumber order by borid");
+			prepared.setInt(1, bid);
 
 			ResultSet result = prepared.executeQuery();
 			while(result.next()) {
-				mainAuthor = result.getString("mainAuthor");
-				publisher = result.getString("publisher");
-				outDate = result.getDate("outDate");
-				title = result.getString("title");
+				String[] row = new String[6];
+				borrowID = result.getInt("borid");
+				row[0] = Integer.toString(borrowID);
+				row[1] = result.getString("mainAuthor");
+				row[2] = result.getString("publisher");
+				row[3] = result.getDate("outDate").toString();
+				row[4] = result.getString("title");
+				row[5] = result.getDate("inDate").toString();
+				finalResult.add(row);
 			}
 			prepared.close();
 		} catch (SQLException e) {
 			printErrorMessage(e);
 		}
+		
+		return finalResult;
 	}
 
 	public void checkHoldRequests(int bid) {

@@ -38,6 +38,8 @@ import main.Librarian;
 
 public class BorrowerPanel {
 
+	int bid;
+	String password;
 	private JFrame mainFrame;
 	private JTextField searchField;
 	private JPanel mainPanel;
@@ -295,7 +297,8 @@ public class BorrowerPanel {
 
 	private void openBorrowedForm(){
 		JPanel viewOutForm = new JPanel();
-		final String[] columnNames = {"Call Number", "Copy #", "Out Date", "Due Date", ""};
+		final String[] columnNames = {"Borrow ID", "Title", "Main Author", 
+				"Publisher", "Borrowed Date", "Expiry Date"};
 		String[][] data = {};
 		
 		final DefaultTableModel outModel = new DefaultTableModel(data, columnNames);
@@ -303,20 +306,26 @@ public class BorrowerPanel {
 		
 		JScrollPane scrollPane = new JScrollPane(viewOutTable);
 
-		scrollPane.setPreferredSize(new Dimension(480, 200));
+		scrollPane.setPreferredSize(new Dimension(600, 200));
 		viewOutForm.add(scrollPane, BorderLayout.PAGE_START);
 		//viewOutForm.add(subjectsPanel, BorderLayout.CENTER);
 
 		final JFrame frame = new JFrame("Borrowed Books");
 		frame.pack();
 		frame.setVisible(true);
-		frame.setResizable(false);
-		frame.setSize(500, 310);
+		frame.setResizable(true);
+		frame.setSize(625, 310);
 		frame.add(viewOutForm, BorderLayout.CENTER);
 
 		Dimension d = frame.getToolkit().getScreenSize();
 		Rectangle r = frame.getBounds();
 		frame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
+		
+		outModel.setRowCount(0);
+		//String subject = subjectsField.getText();
+		ArrayList<String[]> result = borrower.getBorrowedBook(bid);
+		for(int i = 0; i < result.size(); i++)
+			outModel.addRow(result.get(i));
 
 		
 
@@ -613,16 +622,18 @@ public class BorrowerPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String username = usernameField.getText();
-				String password = String.valueOf(passwordField.getPassword());
+				String username2 = usernameField.getText();
+				String password2 = String.valueOf(passwordField.getPassword());
 
 				try{
-					int bid;
-					//bid = Integer.parseInt(username);
-					bid = 11111111;
-					password ="password2";
-					if(borrower.accountValidated(bid, password)){
+					int usernameInInt;
+					//usernameInInt = Integer.parseInt(username2);
+					usernameInInt = 11111111;
+					password2 ="password2";
+					if(borrower.accountValidated(usernameInInt, password2)){
 						mainFrame.dispose();
+						bid = usernameInInt;
+						password = password2;
 						openNewWindow();
 					}else{
 						JOptionPane.showMessageDialog(null,
