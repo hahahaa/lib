@@ -24,12 +24,6 @@ import main.Librarian;
 
 public class LibrarianPanel {
 
-	private JTextField callNumberField;
-	private JTextField isbnField;
-	private JTextField titleField;
-	private JTextField mainAuthorField;
-	private JTextField publisherField;
-	private JTextField yearField;
 	private JPanel mainPanel;
 	
 	private Librarian lib;
@@ -87,12 +81,12 @@ public class LibrarianPanel {
 		JLabel yearLabel = new JLabel("Year: ");
 
 		// Fields
-		callNumberField = new JTextField();
-		isbnField = new JTextField();
-		titleField = new JTextField();
-		mainAuthorField = new JTextField();
-		publisherField = new JTextField();
-		yearField = new JTextField();
+		final JTextField callNumberField = new JTextField();
+		final JTextField isbnField = new JTextField();
+		final JTextField titleField = new JTextField();
+		final JTextField mainAuthorField = new JTextField();
+		final JTextField publisherField = new JTextField();
+		final JTextField yearField = new JTextField();
 
 		// Buttons
 		JButton addButton = new JButton("Add");
