@@ -149,15 +149,14 @@ public class Librarian {
 		PreparedStatement ps;
 		ResultSet rs;
 		try {
-			ps = con.prepareStatement("select * from ( " +
-					"select * from book natural join ( " +
-					"select callNumber, count(*) as scount " +
-					"from borrowing " +
+			ps = con.prepareStatement("select * from book natural join ( " +
+					"select callNumber, count(*) as scount from borrowing " +
+					"where EXTRACT(year from borrowing.outdate) = ? " +
 					"group by callnumber " +
 					"order by scount desc) " +
-					"where ROWNUM < ?) " +
-					"where year = ? ");
-			ps.setString(2, Integer.toString(n + 1));
+					"where ROWNUM <= ?");
+			
+			ps.setString(1, Integer.toString(n));
 			ps.setString(2, Integer.toString(year));
 			
 			rs = ps.executeQuery();
