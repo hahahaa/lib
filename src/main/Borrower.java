@@ -195,11 +195,6 @@ public class Borrower {
 		
 		// outstanding fees;
 		int hid;
-		Date issuedDate;
-		String title;
-		String isbn;
-		String mainAuthor;
-		String publisher;
 
 		try
 		{
@@ -219,6 +214,7 @@ public class Borrower {
 				row[3] = result.getString("publisher");
 				row[4] = result.getString("isbn");
 				row[5] = result.getDate("issuedDate").toString();
+				finalResult.add(row);
 				
 			}
 			prepared.close();
