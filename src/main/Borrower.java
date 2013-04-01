@@ -1,13 +1,12 @@
 package main;
 
-import java.sql.Date;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.JOptionPane;
-
-import java.sql.Connection;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
 
 public class Borrower {
 
@@ -18,7 +17,10 @@ public class Borrower {
 	}
 
 	// TODO Search for books
-	public void searchBook(String title, String author, String subject){
+	public ArrayList<String[]> searchBook(String title, String author, String subject){
+
+		ArrayList<String[]> finalResult = new ArrayList<String[]>();
+		String[] row; 
 
 		PreparedStatement prepared;
 		ResultSet result;
@@ -28,7 +30,7 @@ public class Borrower {
 		String authorQueryInBook = "";
 		String subjectQuery = "";
 
-		if (title.compareTo("")!=0){
+		if ( title.compareTo("")!=0 ){
 			titleQuery = "(SELECT callNumber " +
 					"FROM Book " +
 					"WHERE title LIKE '%" + title + "%')" +
@@ -50,10 +52,17 @@ public class Borrower {
 			subjectQuery = 
 					"(SELECT callNumber " +
 							"FROM HasSubject " +
-							"WHERE subject LIKE '%" + subject + "%')";
+							"WHERE subject LIKE '%" + subject + "%')" +
+							"UNION";
 		}
 
 		String finalQuery = titleQuery + authorQuery + authorQueryInBook + subjectQuery;
+
+
+		if (subject.compareTo("")==0 && author.compareTo("")==0 && subject.compareTo("") == 0)
+			finalQuery = "select callnumber from bookUNION";
+
+		finalQuery = finalQuery.substring(0, finalQuery.length()-5);
 
 		try {
 
@@ -61,7 +70,24 @@ public class Borrower {
 			result = prepared.executeQuery();
 
 			while(result.next()){
+				row = new String[8];
 				String callNumber = result.getString("callNumber");
+				row[0] = callNumber;
+
+				String subQuery = "select title,mainauthor,publisher,year,isbn"
+						+ " from book where callnumber = ?";
+				PreparedStatement prep = con.prepareStatement(subQuery);
+				prep.setString(1, callNumber);
+				ResultSet subResult = prep.executeQuery();
+				if (subResult.next()){
+					row[1] = subResult.getString("title");
+					row[2] = subResult.getString("mainauthor");
+					row[3] = subResult.getString("publisher");
+					row[4] = subResult.getString("year");
+					row[5] = subResult.getString("isbn");
+				}
+
+				//PreparedStatement prep 
 
 				// Get Number of Copies Checked In
 				try{
@@ -78,6 +104,7 @@ public class Borrower {
 
 					if(result2.next()) {
 						int numCopiesIn = result2.getInt(1);
+						row[6] = Integer.toString(numCopiesIn);
 					}
 
 				} catch(SQLException e){
@@ -99,7 +126,10 @@ public class Borrower {
 
 					if(result2.next()) {
 						int numCopiesOut = result2.getInt(1);
+						row[7] = Integer.toString(numCopiesOut);
 					}
+
+					finalResult.add(row);
 
 				} catch(SQLException e){
 					printErrorMessage(e);
@@ -109,6 +139,8 @@ public class Borrower {
 		} catch (SQLException e) {
 			printErrorMessage(e);
 		}
+
+		return finalResult;
 	}
 	// TODO Check account
 	/*public void checkAccount(int bid, String password) throws IOException {
@@ -118,7 +150,7 @@ public class Borrower {
 	public ArrayList<String[]> checkFine(int bid) {
 
 		// outstanding fees;
-		
+
 		int fid;
 		int amount;
 		ArrayList<String[]> finalResult = new ArrayList<String[]>();
@@ -127,9 +159,9 @@ public class Borrower {
 		{
 			PreparedStatement prepared = con.prepareStatement(
 					"SELECT distinct fid, title, mainauthor, amount, issuedDate, outDate " +
-					"FROM Borrowing, Fine, Book " +
-					"WHERE Borrowing.borid = Fine.borid AND Fine.paidDate IS NULL " +
-					"AND Borrowing.bid = ? and book.callnumber = borrowing.callnumber " +
+							"FROM Borrowing, Fine, Book " +
+							"WHERE Borrowing.borid = Fine.borid AND Fine.paidDate IS NULL " +
+							"AND Borrowing.bid = ? and book.callnumber = borrowing.callnumber " +
 					"order by fid");
 			prepared.setInt(1, bid);
 
@@ -152,7 +184,7 @@ public class Borrower {
 		{
 			printErrorMessage(e);
 		}
-		
+
 		return finalResult;
 	}
 
@@ -164,7 +196,7 @@ public class Borrower {
 		try {
 			PreparedStatement prepared = con.prepareStatement(
 					"SELECT distinct borid, title, mainauthor, publisher, outDate, inDate " +
-					"FROM Borrowing, Book WHERE bid = ? and " +
+							"FROM Borrowing, Book WHERE bid = ? and " +
 					"book.callnumber = borrowing.callnumber order by borid");
 			prepared.setInt(1, bid);
 
@@ -184,13 +216,13 @@ public class Borrower {
 		} catch (SQLException e) {
 			printErrorMessage(e);
 		}
-		
+
 		return finalResult;
 	}
 
 	public ArrayList<String[]> checkHoldRequests(int bid) {
 
-		
+
 		ArrayList<String[]> finalResult = new ArrayList<String[]>();
 		int hid;
 
@@ -198,7 +230,7 @@ public class Borrower {
 		{
 			PreparedStatement prepared = con.prepareStatement(
 					"SELECT hid, publisher, issuedDate, title, isbn, mainAuthor " +
-					"FROM HoldRequest, Book WHERE " +
+							"FROM HoldRequest, Book WHERE " +
 					"HoldRequest.callNumber = Book.callNumber AND bid = ? order by hid");
 			prepared.setInt(1, bid);
 
@@ -213,7 +245,7 @@ public class Borrower {
 				row[4] = result.getString("isbn");
 				row[5] = result.getDate("issuedDate").toString();
 				finalResult.add(row);
-				
+
 			}
 			prepared.close();
 		}
@@ -221,7 +253,7 @@ public class Borrower {
 		{
 			printErrorMessage(e);
 		}
-		
+
 		return finalResult;
 	}
 
@@ -263,13 +295,26 @@ public class Borrower {
 	// TODO Place a hold
 	public void placeHoldRequest(int bid, String callNumber){
 
-		
-		
+
+
 		PreparedStatement prepared;
 		ResultSet result;
 
 		// Check to see if borrower is already holding the item.
 		try {
+			prepared = con.prepareStatement(
+					"SELECT * FROM Book " +
+					"WHERE callNumber = ?");
+			prepared.setString(1, callNumber);
+			result = prepared.executeQuery();
+			if (!result.next()){
+				JOptionPane.showMessageDialog(null,
+						"No book with such CallNumber found",
+						"Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
 			prepared = con.prepareStatement(
 					"SELECT * FROM HoldRequest " +
 					"WHERE bid = ? AND callNumber = ?");

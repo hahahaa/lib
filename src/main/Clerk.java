@@ -288,7 +288,6 @@ public class Clerk {
 	 */
 	private void checkout(int bid, String callNumber){
 		PreparedStatement prepStatement;
-		PreparedStatement prepStatement2;
 		ResultSet result;
 		int copyNo;
 		String sqlQuery;

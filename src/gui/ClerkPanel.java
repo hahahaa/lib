@@ -64,7 +64,7 @@ public class ClerkPanel {
 		final JTextField sinOrStNoField = new JTextField();
 		final JTextField expiryDateField = new JTextField();
 		String[] types = {"", "Student", "Faculty", "Staff"};
-		final JComboBox typeComboBox = new JComboBox(types);
+		final JComboBox<String> typeComboBox = new JComboBox<String>(types);
 		
 		JButton addButton = new JButton("Add");
 		JButton cancelButton = new JButton("Cancel");
@@ -445,9 +445,9 @@ public class ClerkPanel {
 		mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10) );
 		
 		JButton addBorrowerButton = new JButton("Add Borrower");
-		JButton checkoutButton = new JButton("Checkout");
-		JButton processReturnButton = new JButton("Return");
-		JButton checkOverdueButton = new JButton("Check Overdue Items");
+		JButton checkoutButton = new JButton("Checkout Book");
+		JButton processReturnButton = new JButton("Process Book Return");
+		JButton checkOverdueButton = new JButton("Check Overdue Book");
 
 		addBorrowerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){

@@ -136,8 +136,6 @@ public class LibraryDatabase implements ActionListener
 
 		try 
 		{
-			username = "ora_w6a8";	//TODO remove this later
-			password = "a46753109";	//TODO remove this later
 			con = DriverManager.getConnection(connectURL,username,password);
 
 			JOptionPane.showMessageDialog(null,
