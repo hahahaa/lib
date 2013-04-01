@@ -2,13 +2,11 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.Date;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,7 +15,6 @@ import java.util.Calendar;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -265,6 +262,7 @@ public class ClerkPanel {
 					return;
 				}
 				clerk.checkoutItem(bid, callNumber);
+				frame.setVisible(false);
 			}
 		});
 
@@ -339,6 +337,7 @@ public class ClerkPanel {
 					return;
 				};
 				clerk.processReturn(callNumber, copyNo);
+				frame.setVisible(false);
 			}
 		});
 
@@ -352,30 +351,27 @@ public class ClerkPanel {
 	
 	private void openOverdueForm(){
 
-		
 		JPanel overdueForm = new JPanel();
 
 		overdueForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
-
-		//overdueForm.setLayout(new GridLayout());
 		
 		final String[] columnNames = {"Call Number", "Copy #", "Title", "Bid", "Name", "Select"};
 		Object[][] data = {};
 
-		final DefaultTableModel model = new DefaultTableModel(data,columnNames);
+		final DefaultTableModel tableModel = new DefaultTableModel(data,columnNames);
 
-		JTable overdueTable = new JTable(model);
+		JTable overdueTable = new JTable(tableModel);
 		
-		TableColumn tc = overdueTable.getColumnModel().getColumn(5);  
-        tc.setCellEditor(overdueTable.getDefaultEditor(Boolean.class));  
-        tc.setCellRenderer(overdueTable.getDefaultRenderer(Boolean.class));
+		TableColumn tableColumn = overdueTable.getColumnModel().getColumn(5);  
+        tableColumn.setCellEditor(overdueTable.getDefaultEditor(Boolean.class));  
+        tableColumn.setCellRenderer(overdueTable.getDefaultRenderer(Boolean.class));
         
-        ArrayList<String> list = clerk.checkOverDueItems();
+        final ArrayList<String> list = clerk.checkOverDueItems();
         String[] temp;
 		
         for(int i = 0; i < list.size(); i++){
         	temp = list.get(i).split(";");
-    		model.insertRow(overdueTable.getRowCount(),new Object[]{temp[0], temp[1], temp[2], temp[3], temp[4], new Boolean(false)});
+    		tableModel.insertRow(overdueTable.getRowCount(),new Object[]{temp[0], temp[1], temp[2], temp[3], temp[4], new Boolean(false)});
         }
 				
 		JButton sendSeletedButton = new JButton("Send to selected");
@@ -407,11 +403,15 @@ public class ClerkPanel {
 			public void actionPerformed(ActionEvent e)
 			{			
 				ArrayList<String> bids = new ArrayList<String>();
-				for(int x=0; x<model.getRowCount(); x++){
-					if(model.getValueAt(x, 5).equals(true)){
-						bids.add((String) model.getValueAt(x, 3));
+				for(int x=0; x<tableModel.getRowCount(); x++){
+					if(tableModel.getValueAt(x, 5).equals(true)){
+						bids.add((String) tableModel.getValueAt(x, 3));
 					}
 				}
+				JOptionPane.showMessageDialog(null,
+						"Notifications sent to all selected borrowers",
+						"Notification",
+						JOptionPane.INFORMATION_MESSAGE);
 
 			}
 		});
@@ -419,10 +419,13 @@ public class ClerkPanel {
 		sendAllButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{			
-				ArrayList<String> bids = new ArrayList<String>();
-				for(int x=0; x<model.getRowCount(); x++){
-						bids.add((String) model.getValueAt(x, 3));
-				}
+		        for(int i = 0; i < list.size(); i++){
+		        	tableModel.setValueAt(new Boolean(true), i, 5);
+		        }
+		    	JOptionPane.showMessageDialog(null,
+						"Notifications sent to all borrowers",
+						"Notification",
+						JOptionPane.INFORMATION_MESSAGE);
 
 			}
 		});

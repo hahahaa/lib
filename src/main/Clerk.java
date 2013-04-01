@@ -180,6 +180,7 @@ public class Clerk {
 						"Notification sent to borrower with email address:\n" + email,
 						"Notification",
 						JOptionPane.INFORMATION_MESSAGE);
+				
 			}
 			
 		}catch(SQLException e){
