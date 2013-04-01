@@ -192,8 +192,6 @@ public class Borrower {
 
 		
 		ArrayList<String[]> finalResult = new ArrayList<String[]>();
-		
-		// outstanding fees;
 		int hid;
 
 		try
@@ -263,11 +261,9 @@ public class Borrower {
 
 	}
 	// TODO Place a hold
-	public void placeHoldRequest(int bid, String password, String callNumber){
+	public void placeHoldRequest(int bid, String callNumber){
 
-		if (!accountValidated(bid, password)){
-			return;
-		}
+		
 		
 		PreparedStatement prepared;
 		ResultSet result;
@@ -308,7 +304,7 @@ public class Borrower {
 			if (result.next()) {
 
 				JOptionPane.showMessageDialog(null,
-						"One or more copies of the item is still checked in.",
+						"There are copies of the book available",
 						"Error",
 						JOptionPane.ERROR_MESSAGE);
 				prepared.close();
