@@ -12,6 +12,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.JOptionPane;
 
+/*
+ * Implements the transactions that a clerk can make
+ */
 public class Clerk {
 
 	private Connection con;
@@ -66,9 +69,15 @@ public class Clerk {
 				displayExceptionError(e1);
 			}
 		}
-
 	}
 
+	/**
+	 * Do nothing if the borrower's ID has expired
+	 * otherwise, checkout a book
+	 * 
+	 * @param bid	borrower ID
+	 * @param callNumbers	book's call number
+	 */
 	public void checkoutItem(int bid, String callNumbers){
 		if (hasExpired(bid))
 			return;
@@ -193,6 +202,9 @@ public class Clerk {
 		}
 	}
 
+	/**
+	 * @return a list of the items that are overdue and the borrowers who have checked them out
+	 */
 	public ArrayList<String> checkOverDueItems(){
 		Statement statement;
 		ResultSet result;
@@ -205,8 +217,6 @@ public class Clerk {
 		ArrayList<String> titles = new ArrayList<String>();
 		ArrayList<String> callNumbers = new ArrayList<String>();
 		ArrayList<Integer> copyNos = new ArrayList<Integer>();
-		//ArrayList<Date> inDates = new ArrayList<Date>();
-		//ArrayList<String> emails = new ArrayList<String>();
 		
 		ArrayList<String> list = new ArrayList<String>();
 		try
@@ -214,7 +224,7 @@ public class Clerk {
 		
 			statement = con.createStatement();
 			
-			// find bid, name , title, call number, copy no., indate, email 
+			// find bid, name , title, call number, copy no.
 			sqlQuery = "SELECT distinct Borrower.bid, Borrower.name, Borrowing.copyNo, Book.title, Borrowing.callNumber " +
 					"FROM Borrowing, Borrower, Book, BookCopy WHERE Borrowing.bid = Borrower.bid and " +
 					"Borrowing.callNumber = Book.callNumber and BookCopy.callNumber = Borrowing.callNumber " +
@@ -227,8 +237,6 @@ public class Clerk {
 				titles.add(result.getString("title"));
 				callNumbers.add(result.getString("callNumber"));
 				copyNos.add(result.getInt("copyNo"));
-				//inDates.add(result.getDate("inDate"));
-				//emails.add(result.getString("emailAddress"));
 				index++;
 			}
 			statement.close();

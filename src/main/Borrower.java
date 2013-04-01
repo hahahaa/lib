@@ -8,6 +8,9 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
+/*
+ * Implements the transactions that a borrower can make
+ */
 public class Borrower {
 
 	private Connection con;
@@ -16,7 +19,13 @@ public class Borrower {
 		this.con = con;
 	}
 
-	// TODO Search for books
+	/**
+	 * 
+	 * @param title
+	 * @param author
+	 * @param subject
+	 * @return a list of books that match the search together with the number of copies that are in and out.
+	 */
 	public ArrayList<String[]> searchBook(String title, String author, String subject){
 
 		ArrayList<String[]> finalResult = new ArrayList<String[]>();
@@ -142,11 +151,12 @@ public class Borrower {
 
 		return finalResult;
 	}
-	// TODO Check account
-	/*public void checkAccount(int bid, String password) throws IOException {
-		if (accountValidated(bid, password) != false) return;
-	}*/
 
+	/**
+	 * 
+	 * @param bid	ID of the borrower
+	 * @return	a list of outstanding fines charged to the borrower
+	 */
 	public ArrayList<String[]> checkFine(int bid) {
 
 		// outstanding fees;
@@ -188,6 +198,11 @@ public class Borrower {
 		return finalResult;
 	}
 
+	/**
+	 * 
+	 * @param bid	ID of the borrower
+	 * @return	a list of books borrowed by the borrower
+	 */
 	public ArrayList<String[]> getBorrowedBook(int bid){
 		int borrowID;
 		ArrayList<String[]> finalResult = new ArrayList<String[]>();
@@ -220,6 +235,11 @@ public class Borrower {
 		return finalResult;
 	}
 
+	/**
+	 * 
+	 * @param bid	ID of the borrower
+	 * @return	a list of hold requests made by the borrower
+	 */
 	public ArrayList<String[]> checkHoldRequests(int bid) {
 
 
@@ -257,6 +277,12 @@ public class Borrower {
 		return finalResult;
 	}
 
+	/**
+	 * validate borrower and his/her password
+	 * @param bid	borrower ID
+	 * @param password
+	 * @return	true if the ID exists and the password is correct, otherwise false
+	 */
 	public boolean accountValidated(int bid, String password){
 
 		PreparedStatement prepared;
@@ -292,7 +318,12 @@ public class Borrower {
 				JOptionPane.ERROR_MESSAGE);
 
 	}
-	// TODO Place a hold
+	
+	/**
+	 * generate a hold request
+	 * @param bid	borrower ID
+	 * @param callNumber
+	 */
 	public void placeHoldRequest(int bid, String callNumber){
 
 
@@ -396,7 +427,12 @@ public class Borrower {
 			}
 		}
 	}
-	// TODO Pay a fine
+	
+	/**
+	 * Pay a fine charged to the borrower
+	 * @param bid	borrower ID
+	 * @param fid	fine ID
+	 */
 	public void payFine(int bid, int fid) {
 
 		PreparedStatement  prepared;

@@ -11,6 +11,9 @@ import java.util.Calendar;
 
 import javax.swing.JOptionPane;
 
+/*
+ * Implements the transactions that a librarian can make
+ */
 public class Librarian {
 	
 	private Connection con;
