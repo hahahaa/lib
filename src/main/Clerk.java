@@ -177,7 +177,7 @@ public class Clerk {
 				prepStatement.close();
 				// show message sent with pop up
 				JOptionPane.showMessageDialog(null,
-						"Email has been sent to borrower " + email,
+						"Notification sent to borrower with email address:\n" + email,
 						"Notification",
 						JOptionPane.INFORMATION_MESSAGE);
 			}
