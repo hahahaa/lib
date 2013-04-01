@@ -45,7 +45,7 @@ public class LibrarianPanel {
 		mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10) );
 
 		JButton addBookButton = new JButton("Add Book");
-		JButton viewOutButton = new JButton("View Checked Out Items");
+		JButton viewOutButton = new JButton("Checked Out Items");
 		JButton viewPopularButton = new JButton("View Popular Items");
 
 		addBookButton.addActionListener(new ActionListener() {
@@ -247,7 +247,7 @@ public class LibrarianPanel {
 		viewPopForm.add(topPanel, BorderLayout.CENTER);
 		viewPopForm.add(buttonPanel, BorderLayout.PAGE_END);
 
-		final JFrame frame = new JFrame("View Popular Items");
+		final JFrame frame = new JFrame("Popular Items");
 		frame.pack();
 		frame.setVisible(true);
 		frame.setResizable(false);
