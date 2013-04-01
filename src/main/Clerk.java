@@ -303,7 +303,7 @@ public class Clerk {
 			result = prepStatement.executeQuery();
 			if(!result.next()){
 				JOptionPane.showMessageDialog(null,
-						"No copies are currently available for " + callNumber,
+						"No copies are available for " + callNumber,
 						"Notification",
 						JOptionPane.INFORMATION_MESSAGE);
 				return;
