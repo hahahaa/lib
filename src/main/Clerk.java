@@ -132,9 +132,10 @@ public class Clerk {
 				result.close();
 			}else {
 				JOptionPane.showMessageDialog(null,
-						"Book is not checked out!",
-						"Notification",
-						JOptionPane.INFORMATION_MESSAGE);
+						"An error occured: please make sure you entered the correct \n" +
+						"call number and copy number",
+						"Error",
+						JOptionPane.ERROR_MESSAGE);
 				prepStatement.close();
 				result.close();
 				return;
@@ -259,7 +260,7 @@ public class Clerk {
 			prepStatement = con.prepareStatement(sqlQuery);
 			prepStatement.setInt(1, bid);
 			result = prepStatement.executeQuery();
-			if(result.next()){   							//    <----------------------------------- Check this when testing !!!
+			if(result.next()){   							
 				JOptionPane.showMessageDialog(null,
 						"Account expired!",
 						"Error",
