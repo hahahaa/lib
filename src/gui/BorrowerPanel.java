@@ -215,11 +215,7 @@ public class BorrowerPanel {
 
 	}
 
-	/////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////
-	private void openHoldForm(){
+	private void makeHoldRequest(){
 		// Add borrower Form
 		JPanel holdForm = new JPanel();
 		// Set form layout
@@ -227,26 +223,20 @@ public class BorrowerPanel {
 		holdForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
 
 		Font bItalic = new Font("Arial", Font.ITALIC, 15);
-		//		loginButton.setFont(bItalic);
 
 
 		// Field Labels
 		JLabel callNumberLabel = new JLabel("Call Number: ");
-		JLabel bidLabel = new JLabel( "Bid: " );
-		JLabel passwordLabel = new JLabel( "Password: " );
+		
 		// Fields
 		final JTextField callNumberField = new JTextField(10);
-		final JTextField bidField = new JTextField(10);
-		final JTextField passwordField = new JTextField(10);
 
 		// Buttons
-		JButton holdButton = new JButton("Place Hold");
+		JButton makeRequestButton = new JButton("Place Hold");
 		JButton cancelButton = new JButton("Cancel");
 
 		callNumberLabel.setFont(bItalic);
-		bidLabel.setFont(bItalic);
-		passwordLabel.setFont(bItalic);
-		holdButton.setFont(bItalic);
+		makeRequestButton.setFont(bItalic);
 		cancelButton.setFont(bItalic);
 
 
@@ -254,14 +244,8 @@ public class BorrowerPanel {
 		holdForm.add(callNumberLabel);
 		holdForm.add(callNumberField);
 
-		holdForm.add( bidLabel );
-		holdForm.add( bidField );
-
-		holdForm.add( passwordLabel );
-		holdForm.add( passwordField );
-
 		holdForm.add(cancelButton);
-		holdForm.add(holdButton);
+		holdForm.add(makeRequestButton);
 
 
 		// Window
@@ -269,21 +253,20 @@ public class BorrowerPanel {
 		// Window Properties
 		frame.pack();
 		frame.setVisible(true);
-		frame.setSize(300, 125);
+		//frame.setSize(300, 30);
 		//Add content to the window.
 		frame.add(holdForm, BorderLayout.CENTER);
 
 		frame.setResizable(true);
-		frame.setSize(640/2,360/2);
+		frame.setSize(275,125);
 		frame.setLocation( 180, 140 );
 		// Button Listeners
-		holdButton.addActionListener(new ActionListener(){
+		makeRequestButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{
-				int bid = Integer.parseInt( bidField.getText() );
+				
 				String callNumber = callNumberField.getText();
-				String password = passwordField.getText();
-				borrower.placeHoldRequest( bid, password, callNumber );
+				borrower.placeHoldRequest(bid, callNumber );
 			}
 		});
 
@@ -714,6 +697,13 @@ public class BorrowerPanel {
 			public void actionPerformed(ActionEvent e)
 			{				
 				checkHoldRequest();
+			}
+		});
+		
+		makeRequestButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e)
+			{				
+				makeHoldRequest();
 			}
 		});
 		
