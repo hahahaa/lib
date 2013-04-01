@@ -185,7 +185,7 @@ public class ClerkPanel {
 				String type = (String)typeComboBox.getSelectedItem();
 				if (type.compareTo("")==0) {
 					JOptionPane.showMessageDialog(null,
-							"Please select borrower type",
+							"Please select a borrower type",
 							"Error",
 							JOptionPane.ERROR_MESSAGE);
 					return;
@@ -212,7 +212,7 @@ public class ClerkPanel {
 		checkoutForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
 		
 		JLabel bidLabel = new JLabel("Bid:");
-		JLabel callNumberLabel = new JLabel("Call Numbers(separated by ; ):");
+		JLabel callNumberLabel = new JLabel("Call Numbers (separated by ; ):");
 		
 		final JTextField bidField = new JTextField(); 
 		final JTextField callNumberField = new JTextField();
