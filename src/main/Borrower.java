@@ -1,6 +1,5 @@
 package main;
 
-import java.io.IOException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -122,7 +121,7 @@ public class Borrower {
 		
 		int fid;
 		int amount;
-		ArrayList<String[]> finalResult = new ArrayList<>();
+		ArrayList<String[]> finalResult = new ArrayList<String[]>();
 
 		try
 		{
@@ -159,7 +158,7 @@ public class Borrower {
 
 	public ArrayList<String[]> getBorrowedBook(int bid){
 		int borrowID;
-		ArrayList<String[]> finalResult = new ArrayList<>();
+		ArrayList<String[]> finalResult = new ArrayList<String[]>();
 
 
 		try {
@@ -192,7 +191,7 @@ public class Borrower {
 	public ArrayList<String[]> checkHoldRequests(int bid) {
 
 		
-		ArrayList<String[]> finalResult = new ArrayList<>();
+		ArrayList<String[]> finalResult = new ArrayList<String[]>();
 		
 		// outstanding fees;
 		int hid;
