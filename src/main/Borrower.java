@@ -352,15 +352,10 @@ public class Borrower {
 		}
 	}
 	// TODO Pay a fine
-	public void payFine(int bid, String password, int fid) {
-
-		if (!accountValidated(bid, password)) return;
+	public void payFine(int bid, int fid) {
 
 		PreparedStatement  prepared;
 		ResultSet  result;
-
-		int amount;
-		Date issuedDate;
 
 		// Check to see if fine is attached to borrower.
 		try {
@@ -376,12 +371,10 @@ public class Borrower {
 						"Error",
 						JOptionPane.ERROR_MESSAGE);
 				prepared.close();
+				result.close();
 				return;
 			}
-
-			amount = result.getInt("amount");
-			//issuedDate = result.getDate("issuedDate");
-
+			result.close();
 			prepared.close();
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(null,
