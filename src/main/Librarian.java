@@ -61,6 +61,10 @@ public class Librarian {
 				System.exit(-1);
 			}
 		}
+		JOptionPane.showMessageDialog(null,
+				"A copy of " + callNumber + " is added",
+				"Successful",
+				JOptionPane.INFORMATION_MESSAGE);	
 	}
 	
 	/**
@@ -68,8 +72,6 @@ public class Librarian {
 	 * otherwise all the books that are out are listed by the report.
 	 * The following attributes are shown on the report
 	 * callNumber, copyNo, Out Date, In Date, isOverdue
-	 * if isOverDue is 1 if Due Date < Current Date
-	 * otherwise isOverDue is 0 
 	 * 
 	 * @param subject	the subject to search for
 	 * @return a report with all the books have been checked out
@@ -97,6 +99,7 @@ public class Librarian {
 			}
 			
 			rs = ps.executeQuery();
+						
 			while(rs.next())
 			{
 				String[] row = new String[NUM_CHECKED_OUT_REPORT_COL];
@@ -106,15 +109,21 @@ public class Librarian {
 				row[2] = rs.getDate("outDate").toString();
 				dueDate = rs.getDate("inDate");
 				row[3] = dueDate.toString();
-				if (dueDate.after(currDate))
-					row[4] = "1";
+				if(dueDate.after(currDate))
+					row[4] = "";
 				else
-					row[4] = "0";
+					row[4] = "Overdue";
 				
 				report.add(row);
 			}
 			rs.close();
 			ps.close();
+			
+			if(report.isEmpty())				
+				JOptionPane.showMessageDialog(null,
+						"No record, the search is case-sensitive",
+						"",
+						JOptionPane.INFORMATION_MESSAGE);				
 		}
 		catch (SQLException ex) {	
 			JOptionPane.showMessageDialog(null,
@@ -160,6 +169,7 @@ public class Librarian {
 			ps.setString(2, Integer.toString(year));
 			
 			rs = ps.executeQuery();
+			
 			while(rs.next())
 			{
 				String[] row = new String[NUM_POPURLAR_REPROT_COL];
@@ -176,6 +186,12 @@ public class Librarian {
 			}
 			rs.close();
 			ps.close();	
+			
+			if(report.isEmpty())				
+				JOptionPane.showMessageDialog(null,
+						"No record",
+						"",
+						JOptionPane.INFORMATION_MESSAGE);		
 		}
 		catch (SQLException ex) {	
 			JOptionPane.showMessageDialog(null,
@@ -206,7 +222,7 @@ public class Librarian {
 		ResultSet rs = ps.executeQuery();
 		boolean result = rs.next();
 		rs.close();
-		ps.close();		
+		ps.close();
 		return result;
 	}
 	
@@ -220,7 +236,6 @@ public class Librarian {
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
 			copyNumber = rs.getInt("copyNumber");
-			System.out.println("addOneBookCopy: copyNumber = " + copyNumber);
 		}
 		else
 			copyNumber = 0;
