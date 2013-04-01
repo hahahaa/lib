@@ -377,7 +377,7 @@ public class BorrowerPanel {
 			outModel.addRow(result.get(i));
 	}
 
-	private void openPayFineForm()
+	private void payFine()
 	{
 		// Add a pay fine form
 		JPanel finesForm = new JPanel();
@@ -390,33 +390,19 @@ public class BorrowerPanel {
 		//		loginButton.setFont(bItalic);
 
 		// Field Labels
-		JLabel bidLabel = new JLabel("BID: ");
-		JLabel passwordLabel = new JLabel( "password: " );
 		JLabel fidLabel = new JLabel("Fine ID: ");
 		//JLabel amountLabel = new JLabel( "Amount: " );
 
 		// Fields
-		final JTextField bidField = new JTextField(10);
-		final JTextField passwordField = new JTextField(10);
 		final JTextField fidField = new JTextField(10);
-		//final JTextField amountField = new JTextField(10);
 
 		// Buttons
 		JButton payButton = new JButton("Pay Fine");
 		JButton cancelButton = new JButton("Cancel");
 
-		bidLabel.setFont(bItalic);
-		passwordLabel.setFont(bItalic);
 		fidLabel.setFont(bItalic);
 		payButton.setFont(bItalic);
 		cancelButton.setFont(bItalic);
-
-		// Add components to panel
-		finesForm.add( bidLabel );
-		finesForm.add( bidField );
-
-		finesForm.add( passwordLabel );
-		finesForm.add( passwordField );
 
 		finesForm.add( fidLabel );
 		finesForm.add( fidField );
@@ -443,11 +429,16 @@ public class BorrowerPanel {
 		payButton.addActionListener( new ActionListener(){
 			public void actionPerformed( ActionEvent e )
 			{
-				int bid = Integer.parseInt( bidField.getText() );
-				String password = passwordField.getText();
-				int fid = Integer.parseInt( fidField.getText() );
-				//int amount = Integer.parseInt( amountField.getText() );
-				borrower.payFine( bid, password, fid );
+				try{
+					int fid = Integer.parseInt(fidField.getText());
+					borrower.payFine(bid,fid );
+				}catch (Exception e1){
+					JOptionPane.showMessageDialog(null,
+							"Invalid FineID " + e1.getMessage(),
+							"Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+				
 			}
 		});
 
@@ -645,25 +636,25 @@ public class BorrowerPanel {
 
 		// Buttons
 		JButton checkBorrowButton = new JButton("Check Borrowed Books");
-		JButton payFineButton = new JButton("Check Oustanding Fines");
+		JButton checkFineButton = new JButton("Check Oustanding Fines");
 		JButton checkRequestButton = new JButton("Check Hold Request");
 		JButton makeRequestButton = new JButton("Make Hold Request");
-		JButton payOutstandingFineButton = new JButton("Pay Outstanding Fine");
+		JButton payFineButton = new JButton("Pay Outstanding Fine");
 		JButton closeButton = new JButton("Close");
 
 		checkBorrowButton.setFont(bItalic);
-		payFineButton.setFont(bItalic);
+		checkFineButton.setFont(bItalic);
 		checkRequestButton.setFont(bItalic);
 		makeRequestButton.setFont(bItalic);
-		payOutstandingFineButton.setFont(bItalic);
+		payFineButton.setFont(bItalic);
 		closeButton.setFont(bItalic);
 
 		// Add components to panel
 		accountForm.add(checkBorrowButton);
-		accountForm.add(payFineButton);
+		accountForm.add(checkFineButton);
 		accountForm.add(checkRequestButton);
 		accountForm.add(makeRequestButton);
-		accountForm.add(payOutstandingFineButton);
+		accountForm.add(payFineButton);
 		accountForm.add(closeButton);
 
 		// Window
@@ -686,7 +677,7 @@ public class BorrowerPanel {
 			}
 		});
 
-		payFineButton.addActionListener(new ActionListener(){
+		checkFineButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{
 				checkOutstandingFine();
@@ -704,6 +695,13 @@ public class BorrowerPanel {
 			public void actionPerformed(ActionEvent e)
 			{				
 				makeHoldRequest();
+			}
+		});
+		
+		payFineButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e)
+			{				
+				payFine();
 			}
 		});
 		
