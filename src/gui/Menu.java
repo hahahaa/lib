@@ -11,11 +11,10 @@ import java.sql.Connection;
 
 public class Menu extends JPanel {
 	
-	private Connection con;
-	
+	private static final long serialVersionUID = 464260561108067076L;
+
 	public Menu(Connection con) {
 		super(new GridLayout(1, 1));
-		this.con = con;
 
 		JTabbedPane tabbedPane = new JTabbedPane();
 		

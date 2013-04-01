@@ -20,8 +20,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-
 import main.Librarian;
 
 public class LibrarianPanel {
@@ -34,14 +32,9 @@ public class LibrarianPanel {
 	private JTextField yearField;
 	private JPanel mainPanel;
 	
-	private Connection con;
 	private Librarian lib;
 	
-	public static JTable viewPopTable;
-	public static DefaultTableModel popModel;
-
 	public LibrarianPanel(Connection con) {
-		this.con = con;
 		lib = new Librarian(con);
 	}
 	
@@ -59,7 +52,7 @@ public class LibrarianPanel {
 			public void actionPerformed(ActionEvent e) {
 				openAddBookForm();
 			}
-		});  
+		});
 
 		viewOutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -69,7 +62,7 @@ public class LibrarianPanel {
 
 		viewPopularButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				openViewPopForm();
+				openPopularReport();
 			}
 		});  
 
@@ -223,99 +216,64 @@ public class LibrarianPanel {
 			}
 		});
 	}
-//	
-//	private void openViewPopForm(){
-//		// Add check overdue Form
-//		JPanel viewPopForm = new JPanel();
-//
-//		final String[] columnNames = {"Call Number", "ISBN", "Title", "Main Author", "Publisher", "Year"};
-//		Object[][] data = {};
-//
-//		popModel = new DefaultTableModel(data,columnNames);
-//
-//		// Add table to view items
-//		viewPopTable = new JTable(popModel);
-//		
-//		// Add table to view items
-//		JScrollPane scrollPane = new JScrollPane(viewPopTable);
-//		
-//		JLabel topLabel = new JLabel("Top: ");
-//		final JTextField topField = new JTextField(10);
-//		JLabel yearLabel = new JLabel("of year: ");
-//		final JTextField yearField = new JTextField(10);
-//		JPanel topPanel = new JPanel();
-//		
-//		topPanel.add(topLabel);
-//		topPanel.add(topField);
-//		topPanel.add(yearLabel);
-//		topPanel.add(yearField);
-//		
-//		// Buttons
-//		JButton showButton = new JButton("Show");
-//		JButton closeButton = new JButton("Close");
-//		// Button panel
-//		JPanel buttonPanel = new JPanel();
-//		buttonPanel.add(showButton, BorderLayout.LINE_START);
-//		buttonPanel.add(closeButton, BorderLayout.LINE_END);
-//		
-//
-//		// Add components to panel
-//		scrollPane.setPreferredSize(new Dimension(480, 200));
-//		viewPopForm.add(scrollPane, BorderLayout.PAGE_START);
-//		viewPopForm.add(topPanel, BorderLayout.CENTER);
-//		viewPopForm.add(buttonPanel, BorderLayout.PAGE_END);
-//
-//		// Window
-//		final JFrame frame = new JFrame("View Popular Items");
-//		// Window Properties
-//		frame.pack();
-//		frame.setVisible(true);
-//		frame.setResizable(false);
-//		frame.setSize(500, 275);
-//		//Add content to the window.
-//		frame.add(viewPopForm, BorderLayout.CENTER);
-//		// center the frame
-//		Dimension d = frame.getToolkit().getScreenSize();
-//		Rectangle r = frame.getBounds();
-//		frame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
-//
-//		// Button Listeners
-//		showButton.addActionListener(new ActionListener(){
-//			public void actionPerformed(ActionEvent e)
-//			{			
-//				int top = 0;
-//				try{
-//					top = Integer.parseInt(topField.getText());
-//				}
-//				catch(NumberFormatException numExcept){
-//					JOptionPane.showMessageDialog(null,
-//							"Invalid top number.",
-//							"Error",
-//							JOptionPane.ERROR_MESSAGE);
-//					return;
-//				};
-//				
-//				int year = 0;
-//				try{
-//					year = Integer.parseInt(yearField.getText());
-//				}
-//				catch(NumberFormatException numExcept){
-//					JOptionPane.showMessageDialog(null,
-//							"Invalid year.",
-//							"Error",
-//							JOptionPane.ERROR_MESSAGE);
-//					return;
-//				};
-//				
-////				Librarian.popularItems(top, year);
-//			}
-//		});
-//
-//		closeButton.addActionListener(new ActionListener(){
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				frame.setVisible(false);
-//			}
-//		});
-//	}
+	
+	private void openPopularReport() {
+		JPanel viewPopForm = new JPanel();
+		final String[] columnNames = {"Call Number", "ISBN", "Title", "Main Author", "Publisher", "Year"};
+		String[][] data = {};
+
+		final DefaultTableModel outModel = new DefaultTableModel(data, columnNames);
+		JTable viewOutTable = new JTable(outModel);
+		
+		JScrollPane scrollPane = new JScrollPane(viewOutTable);
+		
+		JLabel topLabel = new JLabel("Top: ");
+		final JTextField topField = new JTextField(10);
+		JLabel yearLabel = new JLabel("of year: ");
+		final JTextField yearField = new JTextField(10);
+		JPanel topPanel = new JPanel();
+		
+		topPanel.add(topLabel);
+		topPanel.add(topField);
+		topPanel.add(yearLabel);
+		topPanel.add(yearField);
+		
+		JButton searchButton = new JButton("Search");
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.add(searchButton, BorderLayout.LINE_START);		
+
+		scrollPane.setPreferredSize(new Dimension(480, 200));
+		viewPopForm.add(scrollPane, BorderLayout.PAGE_START);
+		viewPopForm.add(topPanel, BorderLayout.CENTER);
+		viewPopForm.add(buttonPanel, BorderLayout.PAGE_END);
+
+		final JFrame frame = new JFrame("View Popular Items");
+		frame.pack();
+		frame.setVisible(true);
+		frame.setResizable(false);
+		frame.setSize(500, 275);
+		frame.add(viewPopForm, BorderLayout.CENTER);
+		Dimension d = frame.getToolkit().getScreenSize();
+		Rectangle r = frame.getBounds();
+		frame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
+
+		searchButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {			
+				try {
+					int top = Integer.parseInt(topField.getText());			
+					int year = Integer.parseInt(yearField.getText());
+					outModel.setRowCount(0);
+					ArrayList<String[]> report = lib.getPopularReport(top, year);
+					for(int i = 0; i < report.size(); i++)
+						outModel.addRow(report.get(i));
+				}
+				catch(NumberFormatException numExcept) {
+					JOptionPane.showMessageDialog(null,
+							"Inputs should be numbers",
+							"Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+	}
 }

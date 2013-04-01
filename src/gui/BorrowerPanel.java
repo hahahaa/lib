@@ -37,18 +37,20 @@ import main.Librarian;
 
 
 public class BorrowerPanel {
-	
+
+	int bid;
+	String password;
 	private JFrame mainFrame;
 	private JTextField searchField;
 	private JPanel mainPanel;
 	private Connection con;
 	private Borrower borrower;
-	
+
 	public BorrowerPanel(Connection con){
 		this.con = con;
 		borrower = new Borrower(con);
 	}
-	
+
 	private void openSearchForm(){
 		// Add borrower Form
 		JPanel searchForm = new JPanel();
@@ -57,18 +59,18 @@ public class BorrowerPanel {
 		searchForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
 
 		Font bItalic = new Font("Arial", Font.ITALIC, 15);
-//		loginButton.setFont(bItalic);
-		
-		
+		//		loginButton.setFont(bItalic);
+
+
 		// Field Labels
 		JLabel searchLabel = new JLabel("Search: ");
 		// Fields
 		searchField = new JTextField(10);
-		
+
 		// Buttons
 		JButton searchButton = new JButton("Search");
 		JButton cancelButton = new JButton("Cancel");
-		
+
 		searchLabel.setFont(bItalic);
 		searchButton.setFont(bItalic);
 		cancelButton.setFont(bItalic);
@@ -108,33 +110,33 @@ public class BorrowerPanel {
 			}
 		});
 	}
-	
+
 	private void openResultsForm(){
 		// Add check overdue Form
 		JPanel resultsForm = new JPanel();
-		
+
 		final String[] columnNames = {"Call Number", "Copy #", "Title", "Out Date", "Due Date", "Out"};
 		Object[][] data = {};
 
 		final DefaultTableModel model = new DefaultTableModel(data,columnNames);
 
-	
+
 		// Add table to view items
 		JTable resultsTable = new JTable(model);
-		
+
 		TableColumn tc = resultsTable.getColumnModel().getColumn(5);  
-        tc.setCellEditor(resultsTable.getDefaultEditor(Boolean.class));  
-        tc.setCellRenderer(resultsTable.getDefaultRenderer(Boolean.class));
+		tc.setCellEditor(resultsTable.getDefaultEditor(Boolean.class));  
+		tc.setCellRenderer(resultsTable.getDefaultRenderer(Boolean.class));
 
 		model.insertRow(resultsTable.getRowCount(),new Object[]{"Call1", "1", "Book1", "date1", "date11", new Boolean(false)});
 		model.insertRow(resultsTable.getRowCount(),new Object[]{"Call2", "2", "Book2", "date2", "date22", new Boolean(false)});
 		model.insertRow(resultsTable.getRowCount(),new Object[]{"Call3", "3", "Book3", "date3", "date33", new Boolean(false)});
 		model.insertRow(resultsTable.getRowCount(),new Object[]{"Call4", "4", "Book4", "date4", "date44", new Boolean(false)});
-		
-		
+
+
 		// Add table to view items
 		JScrollPane scrollPane = new JScrollPane(resultsTable);
-		
+
 		// Add components to panel
 		scrollPane.setPreferredSize(new Dimension(480, 200));
 		resultsForm.add(scrollPane, BorderLayout.PAGE_START);
@@ -152,25 +154,25 @@ public class BorrowerPanel {
 		frame.setLocation( 50, 140 );
 
 	}
-	
+
 	private void openAccountForm(){
 		// Add checkout Form
 		JPanel accountForm = new JPanel();
 		// Set form layout
 		accountForm.setLayout(new GridLayout(0, 1, 10, 10));
 		accountForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
-		
+
 		Font bItalic = new Font("Arial", Font.ITALIC, 15);
-		
+
 		// Buttons
 		JButton borrowedButton = new JButton("Check Borrowed Books");
 		JButton finesButton = new JButton("Check Oustanding Fines");
 		JButton holdButton = new JButton("Check Hold Request");
-		
+
 		borrowedButton.setFont(bItalic);
 		finesButton.setFont(bItalic);
 		holdButton.setFont(bItalic);
-		
+
 		// Add components to panel
 		accountForm.add(borrowedButton);
 		accountForm.add(finesButton);
@@ -178,7 +180,7 @@ public class BorrowerPanel {
 
 		// Window
 		JFrame frame = new JFrame("Account Information");
-		
+
 		// Window Properties
 		frame.pack();
 		frame.setVisible(true);
@@ -192,27 +194,27 @@ public class BorrowerPanel {
 		borrowedButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{				
-				openBorrowedForm();
+				checkBorrowedBooks();
 			}
 		});
-		
+
 		finesButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{
-				openFinesForm();
+				checkOutstandingFine();
 			}
 		});
-		
+
 		holdButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{				
-				openViewHoldForm();
+				checkHoldRequest();
 			}
 		});
 
 
 	}
-	
+
 	/////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////
@@ -225,9 +227,9 @@ public class BorrowerPanel {
 		holdForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
 
 		Font bItalic = new Font("Arial", Font.ITALIC, 15);
-//		loginButton.setFont(bItalic);
-		
-		
+		//		loginButton.setFont(bItalic);
+
+
 		// Field Labels
 		JLabel callNumberLabel = new JLabel("Call Number: ");
 		JLabel bidLabel = new JLabel( "Bid: " );
@@ -236,28 +238,28 @@ public class BorrowerPanel {
 		final JTextField callNumberField = new JTextField(10);
 		final JTextField bidField = new JTextField(10);
 		final JTextField passwordField = new JTextField(10);
-		
+
 		// Buttons
 		JButton holdButton = new JButton("Place Hold");
 		JButton cancelButton = new JButton("Cancel");
-		
+
 		callNumberLabel.setFont(bItalic);
 		bidLabel.setFont(bItalic);
 		passwordLabel.setFont(bItalic);
 		holdButton.setFont(bItalic);
 		cancelButton.setFont(bItalic);
-		
+
 
 		// Add components to panel
 		holdForm.add(callNumberLabel);
 		holdForm.add(callNumberField);
-		
+
 		holdForm.add( bidLabel );
 		holdForm.add( bidField );
-		
+
 		holdForm.add( passwordLabel );
 		holdForm.add( passwordField );
-		
+
 		holdForm.add(cancelButton);
 		holdForm.add(holdButton);
 
@@ -292,153 +294,106 @@ public class BorrowerPanel {
 			}
 		});
 	}
-	
-	private void openBorrowedForm(){
-		// Add Book Form
-				JPanel addBookForm = new JPanel();
-				// Set form layout
-				addBookForm.setLayout(new GridLayout(0, 2, 10, 10));
-				addBookForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
 
-				// Field Labels
-				JLabel bidLabel = new JLabel("Borrower ID: ");
-				JLabel passwordLabel = new JLabel("Password: ");
-
-				// Fields
-				JTextField bidField = new JTextField(20);
-				JTextField passwordField = new JTextField(20);
-
-				// Buttons
-				JButton addButton = new JButton("Add");
-				JButton cancelButton = new JButton("Cancel");
-
-				// Add components to panel
-				addBookForm.add(bidLabel);
-				addBookForm.add(bidField);
-				//addBookForm.add(isbnLabel);
-				addBookForm.add(passwordField);
-				//addBookForm.add(titleLabel);
-				/*addBookForm.add(titleField);
-				//addBookForm.add(mainAuthorLabel);
-				addBookForm.add(mainAuthorField);
-				//addBookForm.add(publisherLabel);
-				addBookForm.add(publisherField);
-				addBookForm.add(passwordLabel);
-				addBookForm.add(yearField);
-				addBookForm.add(addButton);
-				addBookForm.add(cancelButton);*/
-
-				// Window
-				final JFrame frame = new JFrame("Log In");
-				// Window Properties
-				frame.pack();
-				frame.setVisible(true);
-				frame.setResizable(false);
-				frame.setSize(300, 300);
-
-				//Add content to the window.
-				frame.add(addBookForm, BorderLayout.CENTER);
-
-				// center the frame
-				Dimension d = frame.getToolkit().getScreenSize();
-				Rectangle r = frame.getBounds();
-				frame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
-				frame.dispose();
-
-	}
-
-	private void openViewHoldForm(){
-		// Add check overdue Form
-		JPanel viewHoldForm = new JPanel();
+	private void checkBorrowedBooks(){
+		JPanel viewOutForm = new JPanel();
+		final String[] columnNames = {"Borrow ID", "Title", "Main Author", 
+				"Publisher", "Borrowed Date", "Expiry Date"};
+		String[][] data = {};
 		
-		final String[] columnNames = {"Call Number", "Copy #", "Title", "Out Date", "Due Date", "Out"};
-		Object[][] data = {};
-
-		final DefaultTableModel model = new DefaultTableModel(data,columnNames);
-
-	
-		// Add table to view items
-		JTable viewHoldTable = new JTable(model);
+		final DefaultTableModel outModel = new DefaultTableModel(data, columnNames);
+		JTable viewOutTable = new JTable(outModel);
 		
-		TableColumn tc = viewHoldTable.getColumnModel().getColumn(5);  
-        tc.setCellEditor(viewHoldTable.getDefaultEditor(Boolean.class));  
-        tc.setCellRenderer(viewHoldTable.getDefaultRenderer(Boolean.class));
+		JScrollPane scrollPane = new JScrollPane(viewOutTable);
 
-		model.insertRow(viewHoldTable.getRowCount(),new Object[]{"Call1", "1", "Book1", "date1", "date11", new Boolean(false)});
-		model.insertRow(viewHoldTable.getRowCount(),new Object[]{"Call2", "2", "Book2", "date2", "date22", new Boolean(false)});
-		model.insertRow(viewHoldTable.getRowCount(),new Object[]{"Call3", "3", "Book3", "date3", "date33", new Boolean(false)});
-		model.insertRow(viewHoldTable.getRowCount(),new Object[]{"Call4", "4", "Book4", "date4", "date44", new Boolean(false)});
-		
-		
-		// Add table to view items
-		JScrollPane scrollPane = new JScrollPane(viewHoldTable);
-		
-		// Add components to panel
-		scrollPane.setPreferredSize(new Dimension(480, 200));
-		viewHoldForm.add(scrollPane, BorderLayout.PAGE_START);
+		scrollPane.setPreferredSize(new Dimension(600, 200));
+		viewOutForm.add(scrollPane, BorderLayout.PAGE_START);
+		//viewOutForm.add(subjectsPanel, BorderLayout.CENTER);
 
-		// Window
-		final JFrame frame = new JFrame("Items on Hold");
-		// Window Properties
+		final JFrame frame = new JFrame("Borrowed Books");
 		frame.pack();
 		frame.setVisible(true);
-
-		//Add content to the window.
-		frame.add(viewHoldForm, BorderLayout.CENTER);
-		
 		frame.setResizable(true);
-		frame.setSize(640,360/2);
-		frame.setLocation( 50, 140 );
+		frame.setSize(625, 310);
+		frame.add(viewOutForm, BorderLayout.CENTER);
+
+		Dimension d = frame.getToolkit().getScreenSize();
+		Rectangle r = frame.getBounds();
+		frame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
+		
+		outModel.setRowCount(0);
+		//String subject = subjectsField.getText();
+		ArrayList<String[]> result = borrower.getBorrowedBook(bid);
+		for(int i = 0; i < result.size(); i++)
+			outModel.addRow(result.get(i));
 	}
-	
-	private void openFinesForm(){
-		// Add check overdue Form
-		JPanel finesForm = new JPanel();
 
-		final String[] columnNames = {"Call Number", "Copy #", "Title", "Out Date", "Due Date", "Out"};
-		Object[][] data = {};
+	private void checkHoldRequest(){
+		JPanel viewOutForm = new JPanel();
+		final String[] columnNames = {"Request ID", "Title", "Main Author", 
+				"Amount", "Issued Date", "Since"};
+		String[][] data = {};
+		
+		final DefaultTableModel outModel = new DefaultTableModel(data, columnNames);
+		JTable viewOutTable = new JTable(outModel);
+		
+		JScrollPane scrollPane = new JScrollPane(viewOutTable);
 
-		final DefaultTableModel model = new DefaultTableModel(data,columnNames);
+		scrollPane.setPreferredSize(new Dimension(600, 200));
+		viewOutForm.add(scrollPane, BorderLayout.PAGE_START);
+		//viewOutForm.add(subjectsPanel, BorderLayout.CENTER);
 
-
-		// Add table to view items
-		JTable finesTable = new JTable(model);
-
-		TableColumn tc = finesTable.getColumnModel().getColumn(5);  
-        tc.setCellEditor(finesTable.getDefaultEditor(Boolean.class));  
-        tc.setCellRenderer(finesTable.getDefaultRenderer(Boolean.class));
-
-		model.insertRow(finesTable.getRowCount(),new Object[]{"Call1", "1", "Book1", "date1", "date11", new Boolean(false)});
-		model.insertRow(finesTable.getRowCount(),new Object[]{"Call2", "2", "Book2", "date2", "date22", new Boolean(false)});
-		model.insertRow(finesTable.getRowCount(),new Object[]{"Call3", "3", "Book3", "date3", "date33", new Boolean(false)});
-		model.insertRow(finesTable.getRowCount(),new Object[]{"Call4", "4", "Book4", "date4", "date44", new Boolean(false)});
-
-
-		// Add table to view items
-		JScrollPane scrollPane = new JScrollPane(finesTable);
-
-		// Add components to panel
-		scrollPane.setPreferredSize(new Dimension(480, 200));
-		finesForm.add(scrollPane, BorderLayout.PAGE_START);
-
-		// Window
 		final JFrame frame = new JFrame("Outstanding Fines");
-		// Window Properties
 		frame.pack();
 		frame.setVisible(true);
-
-		//Add content to the window.
-		frame.add(finesForm, BorderLayout.CENTER);
-		
 		frame.setResizable(true);
-		frame.setSize(640,360/2);
-		frame.setLocation( 50, 140 );
+		frame.setSize(625, 310);
+		frame.add(viewOutForm, BorderLayout.CENTER);
+
+		Dimension d = frame.getToolkit().getScreenSize();
+		Rectangle r = frame.getBounds();
+		frame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
+		
+		outModel.setRowCount(0);
+		//String subject = subjectsField.getText();
+		ArrayList<String[]> result = borrower.checkHoldRequests(bid);
+		for(int i = 0; i < result.size(); i++)
+			outModel.addRow(result.get(i));
 	}
 
-	/////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////
+	private void checkOutstandingFine(){
+		JPanel viewOutForm = new JPanel();
+		final String[] columnNames = {"Fine ID", "Title", "Main Author", 
+				"Amount", "Issued Date", "Since"};
+		String[][] data = {};
+		
+		final DefaultTableModel outModel = new DefaultTableModel(data, columnNames);
+		JTable viewOutTable = new JTable(outModel);
+		
+		JScrollPane scrollPane = new JScrollPane(viewOutTable);
+
+		scrollPane.setPreferredSize(new Dimension(600, 200));
+		viewOutForm.add(scrollPane, BorderLayout.PAGE_START);
+		//viewOutForm.add(subjectsPanel, BorderLayout.CENTER);
+
+		final JFrame frame = new JFrame("Outstanding Fines");
+		frame.pack();
+		frame.setVisible(true);
+		frame.setResizable(true);
+		frame.setSize(625, 310);
+		frame.add(viewOutForm, BorderLayout.CENTER);
+
+		Dimension d = frame.getToolkit().getScreenSize();
+		Rectangle r = frame.getBounds();
+		frame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
+		
+		outModel.setRowCount(0);
+		//String subject = subjectsField.getText();
+		ArrayList<String[]> result = borrower.checkFine(bid);
+		for(int i = 0; i < result.size(); i++)
+			outModel.addRow(result.get(i));
+	}
+
 	private void openPayFineForm()
 	{
 		// Add a pay fine form
@@ -449,8 +404,8 @@ public class BorrowerPanel {
 		finesForm.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
 
 		Font bItalic = new Font("Arial", Font.ITALIC, 15);
-//		loginButton.setFont(bItalic);
-		
+		//		loginButton.setFont(bItalic);
+
 		// Field Labels
 		JLabel bidLabel = new JLabel("BID: ");
 		JLabel passwordLabel = new JLabel( "password: " );
@@ -466,7 +421,7 @@ public class BorrowerPanel {
 		// Buttons
 		JButton payButton = new JButton("Pay Fine");
 		JButton cancelButton = new JButton("Cancel");
-		
+
 		bidLabel.setFont(bItalic);
 		passwordLabel.setFont(bItalic);
 		fidLabel.setFont(bItalic);
@@ -476,13 +431,13 @@ public class BorrowerPanel {
 		// Add components to panel
 		finesForm.add( bidLabel );
 		finesForm.add( bidField );
-		
+
 		finesForm.add( passwordLabel );
 		finesForm.add( passwordField );
-		
+
 		finesForm.add( fidLabel );
 		finesForm.add( fidField );
-		
+
 		finesForm.add( cancelButton );
 		finesForm.add( payButton );
 
@@ -494,13 +449,13 @@ public class BorrowerPanel {
 
 		//Add content to the window.
 		frame.add(finesForm, BorderLayout.CENTER);
-		
+
 		frame.setResizable(true);
 		frame.setSize(640/2,360/2);
 		frame.setLocation( 180, 140 );
 
-		
-		
+
+
 		// Button Listeners
 		payButton.addActionListener( new ActionListener(){
 			public void actionPerformed( ActionEvent e )
@@ -523,29 +478,29 @@ public class BorrowerPanel {
 
 
 	public JComponent getBorrowerPanel(){
-		
+
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(0, 2, 10, 10));
 		mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10) );
 
-		
+
 		JButton searchButton = new JButton("Search Book");
-		
+
 		JButton logInButton = new JButton("Log In");
-		
+
 		//JButton holdRequestButton = new JButton("Make Hold Request");
-		
+
 		//JButton payFineButton = new JButton("Pay Fine");
-		
-		
-		
+
+
+
 		mainPanel.add(logInButton);
 		//mainPanel.add(holdRequestButton);
 		mainPanel.add(searchButton);
 		//mainPanel.add(payFineButton);
-		
 
-		
+
+
 		searchButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{
@@ -556,7 +511,7 @@ public class BorrowerPanel {
 			public void actionPerformed(ActionEvent e)
 			{
 				//openAccountForm();
-				openLogInForm();
+				openLogInPanel();
 			}
 		});
 		/*holdRequestButton.addActionListener(new ActionListener(){
@@ -571,13 +526,13 @@ public class BorrowerPanel {
 				openPayFineForm();
 			}
 		});*/
-		
+
 		return mainPanel;
-		
+
 	}
-	
-	private void openLogInForm(){
-		
+
+	private void openLogInPanel(){
+
 		/*
 		 * constructs login window and loads JDBC driver
 		 */ 
@@ -638,21 +593,26 @@ public class BorrowerPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String username = usernameField.getText();
-				String password = String.valueOf(passwordField.getPassword());
-				
+				String username2 = usernameField.getText();
+				String password2 = String.valueOf(passwordField.getPassword());
+
 				try{
-					int bid = Integer.parseInt(username);
-					if(borrower.accountValidated(bid, password)){
+					int usernameInInt;
+					//usernameInInt = Integer.parseInt(username2);
+					usernameInInt = 11111111;
+					password2 ="password2";
+					if(borrower.accountValidated(usernameInInt, password2)){
 						mainFrame.dispose();
-						openNewWindow();
+						bid = usernameInInt;
+						password = password2;
+						openBorrowerAction();
 					}else{
 						JOptionPane.showMessageDialog(null,
 								"Invalid username/password combination",
 								"Error",
 								JOptionPane.ERROR_MESSAGE);
 					}
-					
+
 				} catch (Exception e1){
 					JOptionPane.showMessageDialog(null,
 							"Invalid username " + e1.getMessage(),
@@ -663,8 +623,8 @@ public class BorrowerPanel {
 				//borrower.accountValidated(bid, password)
 				//mainFrame.dispose();
 			}
-			
-			
+
+
 		});
 
 		// anonymous inner class for closing the window
@@ -687,10 +647,82 @@ public class BorrowerPanel {
 
 		// place the cursor in the text field for the username
 		usernameField.requestFocus();
-		
+
 	}
-	
-	private void openNewWindow(){
+
+	private void openBorrowerAction(){
+
+		// Add checkout Form
+		JPanel accountForm = new JPanel();
+		// Set form layout
+		accountForm.setLayout(new GridLayout(0, 1, 10, 10));
+		accountForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
+
+		Font bItalic = new Font("Arial", Font.ITALIC, 15);
+
+		// Buttons
+		JButton checkBorrowButton = new JButton("Check Borrowed Books");
+		JButton payFineButton = new JButton("Check Oustanding Fines");
+		JButton checkRequestButton = new JButton("Check Hold Request");
+		JButton makeRequestButton = new JButton("Make Hold Request");
+		JButton payOutstandingFineButton = new JButton("Pay Outstanding Fine");
+		JButton closeButton = new JButton("Close");
+
+		checkBorrowButton.setFont(bItalic);
+		payFineButton.setFont(bItalic);
+		checkRequestButton.setFont(bItalic);
+		makeRequestButton.setFont(bItalic);
+		payOutstandingFineButton.setFont(bItalic);
+		closeButton.setFont(bItalic);
+
+		// Add components to panel
+		accountForm.add(checkBorrowButton);
+		accountForm.add(payFineButton);
+		accountForm.add(checkRequestButton);
+		accountForm.add(makeRequestButton);
+		accountForm.add(payOutstandingFineButton);
+		accountForm.add(closeButton);
+
+		// Window
+		final JFrame frame = new JFrame("Account Information");
+
+		// Window Properties
+		frame.pack();
+		frame.setVisible(true);
+		frame.add(accountForm, BorderLayout.CENTER);
+
+		frame.setResizable(true);
+		frame.setSize(300,400);
+		frame.setLocation( 100, 140 );
+
+		// Button Listeners
+		checkBorrowButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e)
+			{				
+				checkBorrowedBooks();
+			}
+		});
+
+		payFineButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e)
+			{
+				checkOutstandingFine();
+			}
+		});
+
+		checkRequestButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e)
+			{				
+				checkHoldRequest();
+			}
+		});
 		
+		closeButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e)
+			{
+				frame.setVisible(false);
+			}
+		});
+
 	}
 }
