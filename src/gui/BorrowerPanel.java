@@ -194,21 +194,21 @@ public class BorrowerPanel {
 		borrowedButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{				
-				openBorrowedForm();
+				checkBorrowedBooks();
 			}
 		});
 
 		finesButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{
-				openFinesForm();
+				checkOutstandingFine();
 			}
 		});
 
 		holdButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{				
-				openViewHoldForm();
+				checkHoldRequest();
 			}
 		});
 
@@ -295,7 +295,7 @@ public class BorrowerPanel {
 		});
 	}
 
-	private void openBorrowedForm(){
+	private void checkBorrowedBooks(){
 		JPanel viewOutForm = new JPanel();
 		final String[] columnNames = {"Borrow ID", "Title", "Main Author", 
 				"Publisher", "Borrowed Date", "Expiry Date"};
@@ -326,103 +326,74 @@ public class BorrowerPanel {
 		ArrayList<String[]> result = borrower.getBorrowedBook(bid);
 		for(int i = 0; i < result.size(); i++)
 			outModel.addRow(result.get(i));
+	}
 
+	private void checkHoldRequest(){
+		JPanel viewOutForm = new JPanel();
+		final String[] columnNames = {"Request ID", "Title", "Main Author", 
+				"Amount", "Issued Date", "Since"};
+		String[][] data = {};
 		
+		final DefaultTableModel outModel = new DefaultTableModel(data, columnNames);
+		JTable viewOutTable = new JTable(outModel);
+		
+		JScrollPane scrollPane = new JScrollPane(viewOutTable);
 
-	}
+		scrollPane.setPreferredSize(new Dimension(600, 200));
+		viewOutForm.add(scrollPane, BorderLayout.PAGE_START);
+		//viewOutForm.add(subjectsPanel, BorderLayout.CENTER);
 
-	private void openViewHoldForm(){
-		// Add check overdue Form
-		JPanel viewHoldForm = new JPanel();
-
-		final String[] columnNames = {"Call Number", "Copy #", "Title", "Out Date", "Due Date", "Out"};
-		Object[][] data = {};
-
-		final DefaultTableModel model = new DefaultTableModel(data,columnNames);
-
-
-		// Add table to view items
-		JTable viewHoldTable = new JTable(model);
-
-		TableColumn tc = viewHoldTable.getColumnModel().getColumn(5);  
-		tc.setCellEditor(viewHoldTable.getDefaultEditor(Boolean.class));  
-		tc.setCellRenderer(viewHoldTable.getDefaultRenderer(Boolean.class));
-
-		model.insertRow(viewHoldTable.getRowCount(),new Object[]{"Call1", "1", "Book1", "date1", "date11", new Boolean(false)});
-		model.insertRow(viewHoldTable.getRowCount(),new Object[]{"Call2", "2", "Book2", "date2", "date22", new Boolean(false)});
-		model.insertRow(viewHoldTable.getRowCount(),new Object[]{"Call3", "3", "Book3", "date3", "date33", new Boolean(false)});
-		model.insertRow(viewHoldTable.getRowCount(),new Object[]{"Call4", "4", "Book4", "date4", "date44", new Boolean(false)});
-
-
-		// Add table to view items
-		JScrollPane scrollPane = new JScrollPane(viewHoldTable);
-
-		// Add components to panel
-		scrollPane.setPreferredSize(new Dimension(480, 200));
-		viewHoldForm.add(scrollPane, BorderLayout.PAGE_START);
-
-		// Window
-		final JFrame frame = new JFrame("Items on Hold");
-		// Window Properties
-		frame.pack();
-		frame.setVisible(true);
-
-		//Add content to the window.
-		frame.add(viewHoldForm, BorderLayout.CENTER);
-
-		frame.setResizable(true);
-		frame.setSize(640,360/2);
-		frame.setLocation( 50, 140 );
-	}
-
-	private void openFinesForm(){
-		// Add check overdue Form
-		JPanel finesForm = new JPanel();
-
-		final String[] columnNames = {"Call Number", "Copy #", "Title", "Out Date", "Due Date", "Out"};
-		Object[][] data = {};
-
-		final DefaultTableModel model = new DefaultTableModel(data,columnNames);
-
-
-		// Add table to view items
-		JTable finesTable = new JTable(model);
-
-		TableColumn tc = finesTable.getColumnModel().getColumn(5);  
-		tc.setCellEditor(finesTable.getDefaultEditor(Boolean.class));  
-		tc.setCellRenderer(finesTable.getDefaultRenderer(Boolean.class));
-
-		model.insertRow(finesTable.getRowCount(),new Object[]{"Call1", "1", "Book1", "date1", "date11", new Boolean(false)});
-		model.insertRow(finesTable.getRowCount(),new Object[]{"Call2", "2", "Book2", "date2", "date22", new Boolean(false)});
-		model.insertRow(finesTable.getRowCount(),new Object[]{"Call3", "3", "Book3", "date3", "date33", new Boolean(false)});
-		model.insertRow(finesTable.getRowCount(),new Object[]{"Call4", "4", "Book4", "date4", "date44", new Boolean(false)});
-
-
-		// Add table to view items
-		JScrollPane scrollPane = new JScrollPane(finesTable);
-
-		// Add components to panel
-		scrollPane.setPreferredSize(new Dimension(480, 200));
-		finesForm.add(scrollPane, BorderLayout.PAGE_START);
-
-		// Window
 		final JFrame frame = new JFrame("Outstanding Fines");
-		// Window Properties
 		frame.pack();
 		frame.setVisible(true);
-
-		//Add content to the window.
-		frame.add(finesForm, BorderLayout.CENTER);
-
 		frame.setResizable(true);
-		frame.setSize(640,360/2);
-		frame.setLocation( 50, 140 );
+		frame.setSize(625, 310);
+		frame.add(viewOutForm, BorderLayout.CENTER);
+
+		Dimension d = frame.getToolkit().getScreenSize();
+		Rectangle r = frame.getBounds();
+		frame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
+		
+		outModel.setRowCount(0);
+		//String subject = subjectsField.getText();
+		ArrayList<String[]> result = borrower.checkHoldRequests(bid);
+		for(int i = 0; i < result.size(); i++)
+			outModel.addRow(result.get(i));
 	}
 
-	/////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////
+	private void checkOutstandingFine(){
+		JPanel viewOutForm = new JPanel();
+		final String[] columnNames = {"Fine ID", "Title", "Main Author", 
+				"Amount", "Issued Date", "Since"};
+		String[][] data = {};
+		
+		final DefaultTableModel outModel = new DefaultTableModel(data, columnNames);
+		JTable viewOutTable = new JTable(outModel);
+		
+		JScrollPane scrollPane = new JScrollPane(viewOutTable);
+
+		scrollPane.setPreferredSize(new Dimension(600, 200));
+		viewOutForm.add(scrollPane, BorderLayout.PAGE_START);
+		//viewOutForm.add(subjectsPanel, BorderLayout.CENTER);
+
+		final JFrame frame = new JFrame("Outstanding Fines");
+		frame.pack();
+		frame.setVisible(true);
+		frame.setResizable(true);
+		frame.setSize(625, 310);
+		frame.add(viewOutForm, BorderLayout.CENTER);
+
+		Dimension d = frame.getToolkit().getScreenSize();
+		Rectangle r = frame.getBounds();
+		frame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
+		
+		outModel.setRowCount(0);
+		//String subject = subjectsField.getText();
+		ArrayList<String[]> result = borrower.checkFine(bid);
+		for(int i = 0; i < result.size(); i++)
+			outModel.addRow(result.get(i));
+	}
+
 	private void openPayFineForm()
 	{
 		// Add a pay fine form
@@ -540,7 +511,7 @@ public class BorrowerPanel {
 			public void actionPerformed(ActionEvent e)
 			{
 				//openAccountForm();
-				openLogInForm();
+				openLogInPanel();
 			}
 		});
 		/*holdRequestButton.addActionListener(new ActionListener(){
@@ -560,7 +531,7 @@ public class BorrowerPanel {
 
 	}
 
-	private void openLogInForm(){
+	private void openLogInPanel(){
 
 		/*
 		 * constructs login window and loads JDBC driver
@@ -634,7 +605,7 @@ public class BorrowerPanel {
 						mainFrame.dispose();
 						bid = usernameInInt;
 						password = password2;
-						openNewWindow();
+						openBorrowerAction();
 					}else{
 						JOptionPane.showMessageDialog(null,
 								"Invalid username/password combination",
@@ -679,7 +650,7 @@ public class BorrowerPanel {
 
 	}
 
-	private void openNewWindow(){
+	private void openBorrowerAction(){
 
 		// Add checkout Form
 		JPanel accountForm = new JPanel();
@@ -728,21 +699,21 @@ public class BorrowerPanel {
 		checkBorrowButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{				
-				openBorrowedForm();
+				checkBorrowedBooks();
 			}
 		});
 
 		payFineButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{
-				openFinesForm();
+				checkOutstandingFine();
 			}
 		});
 
 		checkRequestButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{				
-				openViewHoldForm();
+				checkHoldRequest();
 			}
 		});
 		

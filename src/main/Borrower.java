@@ -112,38 +112,40 @@ public class Borrower {
 		}
 	}
 	// TODO Check account
-	public void checkAccount(int bid, String password) throws IOException {
+	/*public void checkAccount(int bid, String password) throws IOException {
 		if (accountValidated(bid, password) != false) return;
-	}
+	}*/
 
-	public void checkFine(int bid) {
+	public ArrayList<String[]> checkFine(int bid) {
 
 		// outstanding fees;
+		
 		int fid;
 		int amount;
-		Date issuedDate;
-
-		String callNumber;
-		int copyNumber;
-		Date outDate;
+		ArrayList<String[]> finalResult = new ArrayList<>();
 
 		try
 		{
 			PreparedStatement prepared = con.prepareStatement(
-					"SELECT distinct fid, amount, issuedDate, callNumber, copyNo, outDate " +
-					"FROM Borrowing, Fine " +
-					"WHERE Borrowing.borid = Fine.borid AND Fine.paidDate IS NULL AND Borrowing.bid = ?");
+					"SELECT distinct fid, title, mainauthor, amount, issuedDate, outDate " +
+					"FROM Borrowing, Fine, Book " +
+					"WHERE Borrowing.borid = Fine.borid AND Fine.paidDate IS NULL " +
+					"AND Borrowing.bid = ? and book.callnumber = borrowing.callnumber " +
+					"order by fid");
 			prepared.setInt(1, bid);
 
 			ResultSet result = prepared.executeQuery();
 			while(result.next()) {
+				String[] row = new String [6];
 				fid = result.getInt("fid");
+				row[0] = Integer.toString(fid);
+				row[1] = result.getString("title");
+				row[2] = result.getString("mainAuthor");
 				amount = result.getInt("amount");
-				issuedDate = result.getDate("issuedDate");
-
-				callNumber = result.getString("callNumber");
-				copyNumber = result.getInt("copyNo");
-				outDate = result.getDate("outDate");
+				row[3] = Integer.toString(amount);
+				row[4] = result.getDate("issuedDate").toString();
+				row[5] = result.getDate("outDate").toString();
+				finalResult.add(row);
 			}
 			prepared.close();
 		}
@@ -151,19 +153,13 @@ public class Borrower {
 		{
 			printErrorMessage(e);
 		}
+		
+		return finalResult;
 	}
 
 	public ArrayList<String[]> getBorrowedBook(int bid){
-
-		String mainAuthor;
-		String publisher;
-		Date outDate;
-		Date inDate;
-		String title;
 		int borrowID;
-		
 		ArrayList<String[]> finalResult = new ArrayList<>();
-		
 
 
 		try {
@@ -178,10 +174,10 @@ public class Borrower {
 				String[] row = new String[6];
 				borrowID = result.getInt("borid");
 				row[0] = Integer.toString(borrowID);
-				row[1] = result.getString("mainAuthor");
-				row[2] = result.getString("publisher");
-				row[3] = result.getDate("outDate").toString();
-				row[4] = result.getString("title");
+				row[1] = result.getString("title");
+				row[2] = result.getString("mainAuthor");
+				row[3] = result.getString("publisher");
+				row[4] = result.getDate("outDate").toString();
 				row[5] = result.getDate("inDate").toString();
 				finalResult.add(row);
 			}
@@ -193,30 +189,38 @@ public class Borrower {
 		return finalResult;
 	}
 
-	public void checkHoldRequests(int bid) {
+	public ArrayList<String[]> checkHoldRequests(int bid) {
 
+		
+		ArrayList<String[]> finalResult = new ArrayList<>();
+		
 		// outstanding fees;
 		int hid;
 		Date issuedDate;
 		String title;
 		String isbn;
 		String mainAuthor;
+		String publisher;
 
 		try
 		{
 			PreparedStatement prepared = con.prepareStatement(
-					"SELECT hid, issuedDate, title, isbn, mainAuthor " +
+					"SELECT hid, publisher, issuedDate, title, isbn, mainAuthor " +
 					"FROM HoldRequest, Book WHERE " +
-					"HoldRequest.callNumber = Book.callNumber AND bid = ?");
+					"HoldRequest.callNumber = Book.callNumber AND bid = ? order by hid");
 			prepared.setInt(1, bid);
 
 			ResultSet result = prepared.executeQuery();
 			while(result.next()) {
+				String[] row = new String [6];
 				hid = result.getInt("hid");
-				issuedDate = result.getDate("issuedDate");
-				title = result.getString("title");
-				isbn = result.getString("isbn");
-				mainAuthor = result.getString("mainAuthor");
+				row[0] = Integer.toString(hid);
+				row[1] = result.getString("title");
+				row[2] = result.getString("mainAuthor");
+				row[3] = result.getString("publisher");
+				row[4] = result.getString("isbn");
+				row[5] = result.getDate("issuedDate").toString();
+				
 			}
 			prepared.close();
 		}
@@ -224,6 +228,8 @@ public class Borrower {
 		{
 			printErrorMessage(e);
 		}
+		
+		return finalResult;
 	}
 
 	public boolean accountValidated(int bid, String password){
