@@ -40,7 +40,11 @@ public class ClerkPanel {
 		this.con = con;
 		this.clerk = new Clerk(this.con);
 	}
-
+    /*
+     * Opens the add borrower window/from and takes input from user 
+     * to add a new borrower to database
+     *
+     */
 	private void openAddBorrowerForm(){
 		JPanel addBorrowerForm = new JPanel();
 		addBorrowerForm.setLayout(new GridLayout(0, 2, 10, 10));
@@ -68,7 +72,7 @@ public class ClerkPanel {
 		
 		JButton addButton = new JButton("Add");
 		JButton cancelButton = new JButton("Cancel");
-
+        
 		addBorrowerForm.add(nameLabel);
 		addBorrowerForm.add(nameField);
 		addBorrowerForm.add(passwordLabel);
@@ -97,7 +101,8 @@ public class ClerkPanel {
 		frame.setResizable(true);
 		frame.setSize(500,400);
 		frame.setLocation(100,140);
-
+        
+        // check for insert actions oby user
 		addButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{	
@@ -203,11 +208,14 @@ public class ClerkPanel {
 			}
 		});
 	}
-	
+    
+	/*
+     * Opens the checkout window to allow user to provide
+     * call number and bid for checking out books
+     */
 	private void openCheckoutForm(){
-		// Add checkout Form
+
 		JPanel checkoutForm = new JPanel();
-		// Set form layout
 		checkoutForm.setLayout(new GridLayout(0, 2, 10, 10));
 		checkoutForm.setBorder(new EmptyBorder(10, 10, 10, 10) );
 		
@@ -273,7 +281,11 @@ public class ClerkPanel {
 			}
 		});
 	}
-	
+	/*
+     * Opens the reutnr form to allow users to input call number
+     * and copy no to return a book to the library
+     *
+     */
 	private void openReturnForm(){
 		JPanel returnForm = new JPanel();
 		returnForm.setLayout(new GridLayout(0, 2, 10, 10));
@@ -349,6 +361,10 @@ public class ClerkPanel {
 		});
 	}
 	
+    /*
+     * Opens the over due window to list the currently over due books
+     * and the correspodning borrowers who borrowed the books
+     */
 	private void openOverdueForm(){
 
 		JPanel overdueForm = new JPanel();
@@ -437,7 +453,11 @@ public class ClerkPanel {
 		});
 	}
 
-
+    /*
+     * Main window for clerk user to choose between what action
+     * is to be performed 
+     *
+     */
 	public JComponent getClerkPanel(){
 
 		mainPanel = new JPanel();
@@ -448,25 +468,29 @@ public class ClerkPanel {
 		JButton checkoutButton = new JButton("Checkout Book");
 		JButton processReturnButton = new JButton("Process Book Return");
 		JButton checkOverdueButton = new JButton("Check Overdue Book");
-
+        // check which button user selects
 		addBorrowerButton.addActionListener(new ActionListener() {
+            // load add borrower
 			public void actionPerformed(ActionEvent e){
 				openAddBorrowerForm();
 			}
 		});  
 
 		checkoutButton.addActionListener(new ActionListener() {
+            // load checkout 
 			public void actionPerformed(ActionEvent e){
 				openCheckoutForm();
 			}
 		});  
 
 		processReturnButton.addActionListener(new ActionListener() {
+            // load return 
 			public void actionPerformed(ActionEvent e){
 				openReturnForm();
 			}
 		});
 		checkOverdueButton.addActionListener(new ActionListener() {
+            // load overdue
 			public void actionPerformed(ActionEvent e){
 				openOverdueForm();
 			}
